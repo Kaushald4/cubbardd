@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%" viewBox="0 0 375 812">
+  <defs>
+    <clipPath id="clip-path">
+      <rect id="Rectangle_1" data-name="Rectangle 1" width="375" height="812"/>
+    </clipPath>
+  </defs>
+  <g id="iPhone_X_XS_11_Pro_1" data-name="iPhone X, XS, 11 Pro – 1" clip-path="url(#clip-path)">
+    <rect id="Rectangle_1-2" data-name="Rectangle 1" width="374" height="812" transform="translate(1)" fill="#b0de4c"/>
+    <path id="Path_1" data-name="Path 1" d="M0,182.516S62.313,63.443,178.359,87.558s218.354,64.858,198.9-87.8S0-.246,0-.246Z" fill="#cef573" stroke="#707070" stroke-width="1"/>
+    <path id="Path_2" data-name="Path 2" d="M1,102.691S50.643.62,124.169-10.19,243.937,55.245,306.128,63.467s70.455-39.594,70.455-39.594V-1.165L1,0Z" fill="#fff" stroke="#707070" stroke-width="1"/>
+    <path id="Rectangle_2" data-name="Rectangle 2" d="M0,0H374V812H0Z" transform="translate(1)" fill="#b0de4c"/>
+    <path id="Path_3" data-name="Path 3" d="M0,182.516S62.313,63.443,178.359,87.558s218.354,64.858,198.9-87.8S0-.246,0-.246Z" fill="#cef573"/>
+    <path id="Path_4" data-name="Path 4" d="M1,102.691S50.643.62,124.169-10.19,243.937,55.245,306.128,63.467s70.455-39.594,70.455-39.594V-1.165L1,0Z" fill="#b0de4c"/>
+  </g>
+</svg>
