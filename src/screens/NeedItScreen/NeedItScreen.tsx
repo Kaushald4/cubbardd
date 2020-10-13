@@ -14,7 +14,6 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
-import { Constants } from "react-native-unimodules";
 
 import {
   LoadingIndicator,
@@ -24,14 +23,15 @@ import {
   PopuptextField,
 } from "../../components";
 import { Props } from "./types";
-import { Button, useTheme, Text } from "react-native-paper";
+import { useTheme, Text } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import {
   deleteNeedItNotes,
   getAllNeedItNotes,
+  markNeedItNotesLow,
+  moveToGotIt,
   updateNeedItNotes,
 } from "../../services/NeedIt/needit";
-import { useFocusEffect } from "@react-navigation/native";
 import { heightToDp, widthToDp } from "../../utils/dimensions";
 
 const { width, height, scale, fontScale } = Dimensions.get("window");
@@ -43,33 +43,54 @@ const NeedItScreen = ({ navigation }: Props) => {
   const [isLoding, setIsLoading] = useState(false);
   const [isPopupTextFieldShown, setPopupTextFieldShown] = useState(false);
   const [updatedNote, setUpdatedNote] = useState({ id: "", note: "" });
+  const [isLowSelect, setIsLowSelect] = useState(false);
+  const [isLow, setIslow] = useState(false);
 
   //TODO: remove navigation lisetner when component will unmount
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
-
     navigation.addListener("focus", () => {
       getAllNotes();
+    });
+    navigation.addListener("blur", () => {
+      setSelectedItems([]);
+      setIslow(false);
+      setIsLowSelect(false);
     });
   }, []);
 
   const getAllNotes = async () => {
     try {
-      const authData = await AsyncStorage.getItem("token");
-      if (authData) {
-        const { token, id } = JSON.parse(authData as string);
-        const data = await getAllNeedItNotes({ token, userID: id });
-        if (!data.error) {
-          console.log(data);
-          if (data.notes.length <= 0) {
-            setItems([]);
-          } else {
-            setItems(data.notes.needIt);
-          }
-          setIsLoading(false);
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (!isSkippedData) {
+        await AsyncStorage.removeItem("userNotes");
+      }
+      if (isSkippedData && JSON.parse(isSkippedData)) {
+        //user is not signed in
+        const userNotesData = await AsyncStorage.getItem("userNotes");
+        const userNotes = JSON.parse(userNotesData as string);
+        if (userNotes && userNotes.needIt) {
+          setItems(userNotes.needIt);
+        } else {
+          setItems([]);
         }
       } else {
-        setIsLoading(false);
+        //user is signed in fetch notes from server
+        const authData = await AsyncStorage.getItem("token");
+        if (authData) {
+          const { token, id } = JSON.parse(authData as string);
+          const data = await getAllNeedItNotes({ token, userID: id });
+          if (!data.error) {
+            if (data.notes.length <= 0) {
+              setItems([]);
+            } else {
+              setItems(data.notes.needIt);
+            }
+            setIsLoading(false);
+          }
+        } else {
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       setIsLoading(false);
@@ -81,15 +102,29 @@ const NeedItScreen = ({ navigation }: Props) => {
   const singleSwipeDelete = async (id: string | undefined) => {
     const notesId = [id];
     try {
-      setIsLoading(true);
-      const authData = await AsyncStorage.getItem("token");
-      const { token, id } = JSON.parse(authData as string);
-      const data = await deleteNeedItNotes({ userID: id, notesId, token });
-      console.log(data);
-      if (data.success) {
-        getAllNotes();
-        setSelectedItems([]);
-        setIsLoading(false);
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (isSkippedData && JSON.parse(isSkippedData)) {
+        const userNotesData = await AsyncStorage.getItem("userNotes");
+        const userNotes = JSON.parse(userNotesData as string);
+
+        const filteredUserNotes = userNotes.needIt.filter(
+          (el) => el._id !== notesId[0]
+        );
+        const newUserNotes = {
+          needIt: filteredUserNotes,
+          gotIt: userNotes.gotIt,
+        };
+        await AsyncStorage.setItem("userNotes", JSON.stringify(newUserNotes));
+      } else {
+        setIsLoading(true);
+        const authData = await AsyncStorage.getItem("token");
+        const { token, id } = JSON.parse(authData as string);
+        const data = await deleteNeedItNotes({ userID: id, notesId, token });
+        if (data.success) {
+          getAllNotes();
+          setSelectedItems([]);
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       setIsLoading(false);
@@ -101,43 +136,66 @@ const NeedItScreen = ({ navigation }: Props) => {
     const notesId = selectedItems.map(function (item) {
       return item["_id"];
     });
-
-    Alert.alert(
-      "Are you sure want to delete it ?",
-      "",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: async () => {
-            try {
-              setIsLoading(true);
-              const authData = await AsyncStorage.getItem("token");
-              const { token, id } = JSON.parse(authData as string);
-              const data = await deleteNeedItNotes({
-                userID: id,
-                notesId,
-                token,
-              });
-              console.log(data);
-              if (data.success) {
-                getAllNotes();
-                setSelectedItems([]);
-                setIsLoading(false);
-              }
-            } catch (error) {
-              setIsLoading(false);
-              console.log(error);
-            }
+    const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+    if (isSkippedData && JSON.parse(isSkippedData)) {
+      if (notesId.length > 1) {
+        await AsyncStorage.removeItem("userNotes");
+        setItems([]);
+        setSelectedItems([]);
+      } else {
+        const userNotesData = await AsyncStorage.getItem("userNotes");
+        const userNotes = JSON.parse(userNotesData as string);
+        const filteredUserNotes = userNotes.needIt.filter(
+          (el) => el._id !== notesId[0]
+        );
+        const newUserDataNotes = {
+          needIt: filteredUserNotes,
+          gotIt: userNotes.gotIt,
+        };
+        await AsyncStorage.setItem(
+          "userNotes",
+          JSON.stringify(newUserDataNotes)
+        );
+        getAllNotes();
+        setSelectedItems([]);
+      }
+    } else {
+      Alert.alert(
+        "Are you sure want to delete it ?",
+        "",
+        [
+          {
+            text: "Cancel",
+            onPress: () => {},
+            style: "cancel",
           },
-        },
-      ],
-      { cancelable: false }
-    );
+          {
+            text: "Delete",
+            onPress: async () => {
+              try {
+                setIsLoading(true);
+                const authData = await AsyncStorage.getItem("token");
+                const { token, id } = JSON.parse(authData as string);
+                const data = await deleteNeedItNotes({
+                  userID: id,
+                  notesId,
+                  token,
+                });
+                if (data.success) {
+                  getAllNotes();
+                  setSelectedItems([]);
+                  setIsLoading(false);
+                }
+              } catch (error) {
+                setIsLoading(false);
+                console.log(error);
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    }
   };
 
   const handleOnChange = async (
@@ -146,7 +204,6 @@ const NeedItScreen = ({ navigation }: Props) => {
   ) => {
     setUpdatedNote({ id: id as string, note: prevNote as string });
     setPopupTextFieldShown(true);
-    console.log(updatedNote);
   };
 
   //TODO: refactor this to updateNote
@@ -154,22 +211,137 @@ const NeedItScreen = ({ navigation }: Props) => {
     Keyboard.dismiss();
     setPopupTextFieldShown(false);
     try {
-      setIsLoading(true);
-      const authData = await AsyncStorage.getItem("token");
-      const { token, id } = JSON.parse(authData as string);
-      const data = await updateNeedItNotes({
-        userID: id,
-        noteID: updatedNote.id,
-        token,
-        note: updatedNote.note,
-      });
-      if (data) {
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (isSkippedData && JSON.parse(isSkippedData)) {
+        const userNotesData = await AsyncStorage.getItem("userNotes");
+        const userNotes = JSON.parse(userNotesData as string);
+        const index = userNotes.needIt
+          .map((el: any) => el._id)
+          .indexOf(updatedNote.id);
+        const updatedData = userNotes.needIt[index];
+        const newData = (updatedData.note = updatedNote.note);
+        const updatedUserataNote = { _id: updatedNote.id, note: newData };
+        const filteredUserNotes = userNotes.needIt.filter(
+          (el: any) => el._id !== updatedNote.id
+        );
+        const newUserNote = {
+          needIt: [updatedUserataNote, ...filteredUserNotes],
+          gotIt: userNotes.gotIt,
+        };
+        await AsyncStorage.setItem("userNotes", JSON.stringify(newUserNote));
         getAllNotes();
-        setSelectedItems([]);
-        setIsLoading(false);
+      } else {
+        setIsLoading(true);
+        const authData = await AsyncStorage.getItem("token");
+        const { token, id } = JSON.parse(authData as string);
+        const data = await updateNeedItNotes({
+          userID: id,
+          noteID: updatedNote.id,
+          token,
+          note: updatedNote.note,
+        });
+        if (data) {
+          getAllNotes();
+          setSelectedItems([]);
+          setIsLoading(false);
+        }
       }
     } catch (error) {
       setIsLoading(false);
+      console.log(error);
+    }
+  };
+
+  const moveToGotItList = async (
+    notesID?: Array<string>,
+    isTapped: boolean
+  ) => {
+    try {
+      if (!isTapped) {
+        setIsLoading(true);
+        const userAuthData = await AsyncStorage.getItem("token");
+        if (userAuthData) {
+          const { token, id } = JSON.parse(userAuthData);
+          let newNotesId = [];
+          if (selectedItems.length <= 1) {
+            newNotesId.push(...(notesID as Array<string>));
+          } else {
+            const ids = selectedItems.map((el) => el["_id"]);
+            newNotesId.push(...ids);
+          }
+          await moveToGotIt({ userID: id, token, notesID: newNotesId });
+        } else {
+          console.log("Sign in to continue....");
+        }
+      } else {
+        Alert.alert(
+          "Would you like to move the item(s) to the Got It list?",
+          "",
+          [
+            {
+              text: "Cancel",
+              onPress: () => {},
+              style: "cancel",
+            },
+            {
+              text: "Move",
+              onPress: async () => {
+                setIsLoading(true);
+                const userAuthData = await AsyncStorage.getItem("token");
+                if (userAuthData) {
+                  const { token, id } = JSON.parse(userAuthData);
+                  let newNotesId = [];
+                  if (selectedItems.length <= 1) {
+                    newNotesId.push(...(notesID as Array<string>));
+                  } else {
+                    const ids = selectedItems.map((el) => el["_id"]);
+                    newNotesId.push(...ids);
+                  }
+                  await moveToGotIt({ userID: id, token, notesID: newNotesId });
+                  setIsLoading(false);
+                  setIslow(false);
+                  setSelectedItems([]);
+                  navigation.navigate("GotItScreen");
+                } else {
+                  console.log("Sign in to continue....");
+                }
+              },
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const markNoteAsLow = async () => {
+    selectedItems.forEach((el) => {
+      if (el.low) {
+        setIslow(true);
+      }
+    });
+    try {
+      const userAuthData = await AsyncStorage.getItem("token");
+      if (userAuthData) {
+        setIsLoading(true);
+        setIsLowSelect(true);
+        const { token, id } = JSON.parse(userAuthData);
+        const newNotes = selectedItems.map((el) => el["_id"]);
+        await markNeedItNotesLow({
+          userID: id,
+          notesID: newNotes,
+          token,
+        });
+        selectedItems.forEach((e) => (e.low = true));
+        selectedItems.length <= 1 ? setIslow(false) : undefined;
+        setIsLoading(false);
+      } else {
+        setIsLoading(false);
+        console.log("sign in to continue.....");
+      }
+    } catch (error) {
       console.log(error);
     }
   };
@@ -243,21 +415,43 @@ const NeedItScreen = ({ navigation }: Props) => {
                         paddingTop: (height / fontScale) * 0.1,
                       }}
                     >
-                      <Pressable
-                        onPress={() => {}}
-                        android_ripple={{ color: "#FFFFFF" }}
-                        style={{
-                          marginRight: 10,
-                          backgroundColor: "#000000",
-                          borderRadius: 4,
-                          overflow: "hidden",
-                          paddingHorizontal: 8,
-                        }}
-                      >
-                        <Text style={{ textAlign: "center", color: "#FFFFFF" }}>
-                          Low
-                        </Text>
-                      </Pressable>
+                      {isLow ? (
+                        <Pressable
+                          onPress={() => moveToGotItList([], true)}
+                          android_ripple={{ color: "#FFFFFF" }}
+                          style={{
+                            marginRight: 10,
+                            backgroundColor: "#000000",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                            paddingHorizontal: 8,
+                          }}
+                        >
+                          <Text
+                            style={{ textAlign: "center", color: "#FFFFFF" }}
+                          >
+                            Got It
+                          </Text>
+                        </Pressable>
+                      ) : (
+                        <Pressable
+                          onPress={() => markNoteAsLow()}
+                          android_ripple={{ color: "#FFFFFF" }}
+                          style={{
+                            marginRight: 10,
+                            backgroundColor: "#000000",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                            paddingHorizontal: 8,
+                          }}
+                        >
+                          <Text
+                            style={{ textAlign: "center", color: "#FFFFFF" }}
+                          >
+                            Low
+                          </Text>
+                        </Pressable>
+                      )}
                       <Pressable onPress={() => deleteItem()}>
                         <MaterailIcons name="delete" size={20} />
                       </Pressable>
@@ -338,6 +532,9 @@ const NeedItScreen = ({ navigation }: Props) => {
                   updateNote={handleOnChange}
                   setSelectedItems={setSelectedItems}
                   deleteItem={deleteItem}
+                  moveToGotItList={moveToGotItList}
+                  markNoteAsLow={markNoteAsLow}
+                  islowSelect={isLowSelect}
                 />
               </View>
             ) : (

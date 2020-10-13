@@ -35,6 +35,9 @@ interface Props {
     prevNote: string | undefined,
     id: string | undefined
   ) => Promise<void>;
+  moveToGotItList: (id: Array<any>, isTapped: boolean) => Promise<void>;
+  markNoteAsLow: () => Promise<void>;
+  islowSelect: boolean;
 }
 
 export default function MyListView({
@@ -44,13 +47,16 @@ export default function MyListView({
   deleteItem,
   swipeDelete,
   updateNote,
+  moveToGotItList,
+  markNoteAsLow,
+  islowSelect,
 }: Props) {
   const theme = useTheme();
   const [listData, setListData] = useState(data);
 
   useEffect(() => {
     setListData(data);
-  }, [data]);
+  }, [data, islowSelect, selectedItems]);
 
   const closeRow = (
     rowMap: any,
@@ -98,11 +104,22 @@ export default function MyListView({
 
   const renderItem = (data: any) => {
     const opacity = selectedItems.length >= 1 && !data.item.selected ? 0.5 : 1;
+    let backgroundColor;
+    if (
+      islowSelect &&
+      selectedItems.length > 0 &&
+      data.item.selected &&
+      data.item.low
+    ) {
+      backgroundColor = "rgb(204,235,255)";
+    } else {
+      backgroundColor = "#FFFFFF";
+    }
 
     return (
       <TouchableHighlight
         onPress={() => onSelectHandle(data.item._id)}
-        style={[styles.rowFront, { opacity }]}
+        style={[styles.rowFront, { opacity }, { backgroundColor }]}
         underlayColor={"#AAA"}
       >
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -127,26 +144,59 @@ export default function MyListView({
                 }}
               />
             )}
-            <Text> {data.item.note} </Text>
+            <Text> {data.item.note.slice(0, 30)} </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Pressable>
-              <Text
-                style={{
-                  marginRight: 10,
-                  backgroundColor: theme.colors.primary,
-                  paddingHorizontal: 8,
-                  color: "#FFFFFF",
-                  textAlign: "center",
-                  display:
-                    data.item.selected && selectedItems.length <= 1
-                      ? "flex"
-                      : "none",
+            {data.item.low ? (
+              <Pressable
+                onPress={async () =>
+                  await moveToGotItList([data.item._id], true)
+                }
+              >
+                <Text
+                  style={{
+                    marginRight: 10,
+                    // backgroundColor: theme.colors.primary,
+                    paddingHorizontal: 8,
+                    color: "#FFFFFF",
+                    textAlign: "center",
+                    display:
+                      data.item.selected && selectedItems.length <= 1
+                        ? "flex"
+                        : "none",
+                  }}
+                >
+                  <FontAwesome
+                    name="share"
+                    size={25}
+                    color={theme.colors.primary}
+                  />
+                </Text>
+              </Pressable>
+            ) : (
+              <Pressable
+                onPress={async () => {
+                  data.item.low = true;
+                  await markNoteAsLow();
                 }}
               >
-                Low
-              </Text>
-            </Pressable>
+                <Text
+                  style={{
+                    marginRight: 10,
+                    backgroundColor: theme.colors.primary,
+                    paddingHorizontal: 8,
+                    color: "#FFFFFF",
+                    textAlign: "center",
+                    display:
+                      data.item.selected && selectedItems.length <= 1
+                        ? "flex"
+                        : "none",
+                  }}
+                >
+                  Low
+                </Text>
+              </Pressable>
+            )}
             <Pressable
               onPress={deleteItem}
               style={{
@@ -252,7 +302,10 @@ export default function MyListView({
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnRight]}
-        onPress={() => deleteRow(rowMap, data.item._id)}
+        onPress={async () => {
+          await moveToGotItList([data.item._id], false);
+          deleteRow(rowMap, data.item._id);
+        }}
       >
         <FontAwesome
           name="share"

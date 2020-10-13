@@ -88,7 +88,9 @@ const SignupScreen = ({ navigation }: Props) => {
         <View
           style={{
             height:
-              Platform.OS === "android" ? heightToDp("98%") : heightToDp("90%"),
+              Platform.OS === "android"
+                ? heightToDp("98%") - Constants.statusBarHeight
+                : heightToDp("90%"),
             width,
             justifyContent: "space-between",
           }}

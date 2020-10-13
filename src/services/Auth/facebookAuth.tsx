@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-community/async-storage";
 import { LoginManager, AccessToken } from "react-native-fbsdk";
+import { saveAsyncItemToDB } from "./skipAuth";
 import { BASE_URI } from "./uri";
 
 interface User {
@@ -31,7 +32,6 @@ export async function logInWithFacebook() {
                 `https://graph.facebook.com/me?fields=name,email,id&access_token=${token.accessToken}`
               );
               const userDataJson = await userData.json();
-              console.log(userDataJson);
               const { email, id, name } = userDataJson;
               const newUserData = {
                 email,
@@ -47,6 +47,11 @@ export async function logInWithFacebook() {
               });
               const savedUser = await userDataServer.json();
               if (savedUser.token) {
+                await AsyncStorage.removeItem("skippedAuth");
+                await saveAsyncItemToDB({
+                  token: savedUser.token,
+                  userID: savedUser._id,
+                });
                 AsyncStorage.setItem(
                   "token",
                   JSON.stringify({
@@ -118,6 +123,11 @@ export async function signupWithFacebook() {
               const savedUser = await userDataServer.json();
               //TODO: store only token and userID in async storage
               if (savedUser.token) {
+                await AsyncStorage.removeItem("skippedAuth");
+                await saveAsyncItemToDB({
+                  token: savedUser.token,
+                  userID: savedUser.user._id,
+                });
                 AsyncStorage.setItem(
                   "token",
                   JSON.stringify({

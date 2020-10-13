@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Pressable,
   StyleSheet,
@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { Button, useTheme } from "react-native-paper";
 import Fontawesome from "react-native-vector-icons/FontAwesome";
 import { Constants } from "react-native-unimodules";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   visible: Boolean;
@@ -32,6 +33,13 @@ const PopuptextField = ({
   updateNote,
 }: Props) => {
   const theme = useTheme();
+  const inputRef = useRef<any>();
+
+  useEffect(() => {
+    if (visible) {
+      inputRef.current.focus();
+    }
+  }, [visible]);
 
   return (
     <>
@@ -75,6 +83,7 @@ const PopuptextField = ({
                 <View style={{ position: "relative" }}>
                   <TextInput
                     placeholder={note}
+                    ref={inputRef}
                     style={{
                       backgroundColor: "#FFFFFF",
                       borderRadius: 5,

@@ -21,7 +21,11 @@ import {
   PopuptextField,
 } from "../../components";
 import { Props } from "./types";
-import { createNeedItNotes, createGotitNotes } from "../../services/index";
+import {
+  createNeedItNotes,
+  createGotitNotes,
+  addItemToAsyncStorage,
+} from "../../services/index";
 import {
   ScrollView,
   TouchableWithoutFeedback,
@@ -49,30 +53,58 @@ const AddItemScreen = ({ navigation, route }: Props) => {
 
   const addItem = async (note: string) => {
     try {
-      if (note) {
-        setIsLoading(true);
-        const authData = await AsyncStorage.getItem("token");
-        const { token, id } = JSON.parse(authData as string);
+      //if user is not signed in
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (isSkippedData && JSON.parse(isSkippedData)) {
         if (screenName === "Need It") {
-          const createdItem = await createNeedItNotes({
-            note,
-            userID: id,
-            token,
+          // await AsyncStorage.removeItem("userNotes");
+          await addItemToAsyncStorage({
+            needIt: newItem,
+            action: "needIt",
+            navigation,
           });
-          setItems([...items, createdItem]);
-          setPlaceHolder("");
-          setTextFieldShown(false);
-          setIsLoading(false);
+          const userNotesData = await AsyncStorage.getItem("userNotes");
+          const userNotes = await JSON.parse(userNotesData as string);
+
+          setItems(userNotes.needIt);
         } else {
-          const createdItem = await createGotitNotes({
-            note,
-            userID: id,
-            token,
+          await addItemToAsyncStorage({
+            gotIt: newItem,
+            action: "gotIt",
+            navigation,
           });
-          setItems([...items, createdItem]);
-          setPlaceHolder("");
-          setTextFieldShown(false);
-          setIsLoading(false);
+          const userNotesData = await AsyncStorage.getItem("userNotes");
+          const userNotes = await JSON.parse(userNotesData as string);
+          console.log(userNotes);
+
+          setItems(userNotes.gotIt);
+        }
+      } else {
+        if (note) {
+          setIsLoading(true);
+          const authData = await AsyncStorage.getItem("token");
+          const { token, id } = JSON.parse(authData as string);
+          if (screenName === "Need It") {
+            const createdItem = await createNeedItNotes({
+              note,
+              userID: id,
+              token,
+            });
+            setItems([...items, createdItem]);
+            setPlaceHolder("");
+            setTextFieldShown(false);
+            setIsLoading(false);
+          } else {
+            const createdItem = await createGotitNotes({
+              note,
+              userID: id,
+              token,
+            });
+            setItems([...items, createdItem]);
+            setPlaceHolder("");
+            setTextFieldShown(false);
+            setIsLoading(false);
+          }
         }
       }
     } catch (error) {

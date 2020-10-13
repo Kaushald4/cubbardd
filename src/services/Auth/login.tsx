@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-community/async-storage";
+import { saveAsyncItemToDB } from "./skipAuth";
 import { BASE_URI } from "./uri";
 
 interface Props {
@@ -29,13 +30,18 @@ const loginWithEmailAndPassword = async ({ email, password }: Props) => {
         body: JSON.stringify(loginData),
       });
       const jsonRes = await response.json();
-      console.log(jsonRes);
       if (jsonRes.token) {
+        await AsyncStorage.removeItem("skippedAuth");
+        //await AsyncStorage.removeItem("userNotes");
+        await saveAsyncItemToDB({
+          token: jsonRes.token,
+          userID: jsonRes.user._id,
+        });
         AsyncStorage.setItem(
           "token",
           JSON.stringify({ token: jsonRes.token, id: jsonRes.user._id })
         )
-          .then(() => {
+          .then(async () => {
             resolve(jsonRes);
           })
           .catch((error) => {

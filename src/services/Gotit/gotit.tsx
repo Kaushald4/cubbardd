@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-community/async-storage";
 import { BASE_URI } from "../Auth/uri";
 
 interface Props {
@@ -107,27 +108,94 @@ export const deleteGotItNotes = async ({
 };
 export const markGotItNotesLow = async ({
   userID,
-  noteID,
+  notesID,
   token,
 }: {
   userID: string;
-  noteID: string;
+  notesID: Array<string>;
   token: string;
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
-      const response = await fetch(
-        `${BASE_URI}/gotIt/notes/mark/${noteID}/${userID}`,
-        {
-          method: "PUT",
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await fetch(`${BASE_URI}/gotIt/notes/mark/${userID}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ notesID }),
+      });
       const data = await response.json();
       resolve(data);
     } catch (error) {
       console.log("error in marking gotit user notes as low", error);
       reject({ error: error.message });
+    }
+  });
+};
+
+export const moveToNeedIt = async ({
+  userID,
+  notesID,
+  token,
+}: {
+  userID: string;
+  notesID: Array<any>;
+  token: string;
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        `${BASE_URI}/gotit/notes/move_to_need_it/${userID}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notesID }),
+        }
+      );
+      const data = await response.json();
+      resolve(data);
+    } catch (error) {
+      console.log("error in moving gotIt notes to needIt notes ", error);
+      reject({ error: error.message });
+    }
+  });
+};
+
+//global
+export const saveUserNotesToDb = async ({
+  userID,
+  token,
+  notes,
+}: {
+  userID: string;
+  token: string;
+  notes: Array<object>;
+}) => {
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        `${BASE_URI}/notes/create_multiple/${userID}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(notes),
+        }
+      );
+      console.log(response.status);
+      if (response.status === 200) {
+        await AsyncStorage.removeItem("userNotes");
+        resolve("success");
+      }
+    } catch (error) {
+      reject(error.message);
+      console.log(error);
     }
   });
 };

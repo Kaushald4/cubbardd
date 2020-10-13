@@ -116,26 +116,58 @@ export const deleteNeedItNotes = async ({
 };
 export const markNeedItNotesLow = async ({
   userID,
-  noteID,
+  notesID,
   token,
 }: {
   userID: string;
-  noteID: string;
+  notesID: Array<string>;
+  token: string;
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(`${BASE_URI}/needIt/notes/mark/${userID}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ notesID }),
+      });
+      const data = await response.json();
+      resolve(data);
+    } catch (error) {
+      console.log("error in marking gotit user notes as low", error);
+      reject({ error: error.message });
+    }
+  });
+};
+
+export const moveToGotIt = async ({
+  userID,
+  notesID,
+  token,
+}: {
+  userID: string;
+  notesID: Array<any>;
   token: string;
 }) => {
   return new Promise(async (resolve, reject) => {
     try {
       const response = await fetch(
-        `${BASE_URI}/needIt/notes/mark/${noteID}/${userID}`,
+        `${BASE_URI}/needIt/notes/move_to_got_it/${userID}`,
         {
           method: "PUT",
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notesID }),
         }
       );
       const data = await response.json();
       resolve(data);
     } catch (error) {
-      console.log("error in marking gotit user notes as low", error);
+      console.log("error in moving needIt notes to gotit notes ", error);
       reject({ error: error.message });
     }
   });

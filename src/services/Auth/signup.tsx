@@ -29,6 +29,8 @@ const signupUserWithEmailAndPassowrd = async ({ email, password }: Props) => {
       });
       const jsonRes = await response.json();
       if (jsonRes.token) {
+        await AsyncStorage.removeItem("skippedAuth");
+
         // AsyncStorage.setItem(
         //   "token",
         //   JSON.stringify({ token: jsonRes.token, id: jsonRes.user._id })
