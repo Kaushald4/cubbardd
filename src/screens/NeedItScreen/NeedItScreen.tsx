@@ -45,6 +45,7 @@ const NeedItScreen = ({ navigation }: Props) => {
   const [updatedNote, setUpdatedNote] = useState({ id: "", note: "" });
   const [isLowSelect, setIsLowSelect] = useState(false);
   const [isLow, setIslow] = useState(false);
+  const [isMenuItemShown, setIsMenuItemShown] = useState(false);
 
   //TODO: remove navigation lisetner when component will unmount
   useEffect(() => {
@@ -356,7 +357,10 @@ const NeedItScreen = ({ navigation }: Props) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <MyAppbar />
+      <MyAppbar
+        isMenuShown={isMenuItemShown}
+        setMenuVisible={setIsMenuItemShown}
+      />
       <LoadingIndicator isVisible={isLoding} title="" />
       <PopuptextField
         visible={isPopupTextFieldShown}
@@ -524,7 +528,12 @@ const NeedItScreen = ({ navigation }: Props) => {
 
             {/* {list item section starts here} */}
             {items.length >= 1 ? (
-              <View style={{ height: heightToDp("50%") }}>
+              <View
+                style={{
+                  height: heightToDp("50%"),
+                  paddingTop: heightToDp("0.8%"),
+                }}
+              >
                 <MyListview
                   data={items}
                   selectedItems={selectedItems}
@@ -535,6 +544,8 @@ const NeedItScreen = ({ navigation }: Props) => {
                   moveToGotItList={moveToGotItList}
                   markNoteAsLow={markNoteAsLow}
                   islowSelect={isLowSelect}
+                  screenName="NeedIt"
+                  setMenuItemVisibel={setIsMenuItemShown}
                 />
               </View>
             ) : (

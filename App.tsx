@@ -1,24 +1,24 @@
-import 'react-native-gesture-handler';
-import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import "react-native-gesture-handler";
+import React, { useEffect } from "react";
+import { Platform, StyleSheet, Text, View } from "react-native";
 
-import {DefaultTheme as NavigationTheme} from '@react-navigation/native';
+import { DefaultTheme as NavigationTheme } from "@react-navigation/native";
 import {
   DefaultTheme as PaperTheme,
   Provider as PaperProvider,
-} from 'react-native-paper';
-import deepMerge from 'deepmerge';
+} from "react-native-paper";
+import deepMerge from "deepmerge";
 
-import Main from './src/Main';
-import LoadAssets from './src/LoadAssets';
+import Main from "./src/Main";
+import LoadAssets from "./src/LoadAssets";
 
 const myNavigationTheme = {
   ...NavigationTheme,
   colors: {
     ...NavigationTheme.colors,
-    primary: '#B0DE4c',
-    secondaryColor: '#CEF573',
-    accent: '#6c8b23',
+    primary: "#B0DE4c",
+    secondaryColor: "#CEF573",
+    accent: "#6c8b23",
   },
 };
 
@@ -26,9 +26,9 @@ const myPaperTheme = {
   ...PaperTheme,
   colors: {
     ...PaperTheme.colors,
-    primary: '#B0DE4c',
-    secondaryColor: '#CEF573',
-    accent: '#6c8b23',
+    primary: "#B0DE4c",
+    secondaryColor: "#CEF573",
+    accent: "#6c8b23",
   },
 };
 

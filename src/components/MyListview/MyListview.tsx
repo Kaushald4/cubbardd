@@ -16,6 +16,7 @@ import MaterailIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useTheme } from "react-native-paper";
+import { moveToGotIt } from "../../services";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -35,9 +36,12 @@ interface Props {
     prevNote: string | undefined,
     id: string | undefined
   ) => Promise<void>;
-  moveToGotItList: (id: Array<any>, isTapped: boolean) => Promise<void>;
+  moveToGotItList?: (id: Array<any>, isTapped: boolean) => Promise<void>;
+  moveToNeedItList?: (id: Array<any>, isTapped: boolean) => Promise<void>;
   markNoteAsLow: () => Promise<void>;
   islowSelect: boolean;
+  screenName: "NeedIt" | "GotIt";
+  setMenuItemVisibel: (b: boolean) => void;
 }
 
 export default function MyListView({
@@ -50,6 +54,9 @@ export default function MyListView({
   moveToGotItList,
   markNoteAsLow,
   islowSelect,
+  screenName,
+  moveToNeedItList,
+  setMenuItemVisibel,
 }: Props) {
   const theme = useTheme();
   const [listData, setListData] = useState(data);
@@ -227,9 +234,10 @@ export default function MyListView({
     >
       <View style={{ marginVertical: -8.7, flexDirection: "row" }}>
         <TouchableOpacity
-          onPress={() =>
-            closeRow(rowMap, data.item._id, "edit", data.item.note)
-          }
+          onPress={() => {
+            setMenuItemVisibel(false);
+            closeRow(rowMap, data.item._id, "edit", data.item.note);
+          }}
           style={{ justifyContent: "center", alignItems: "center" }}
         >
           <MaterailIcons
@@ -303,8 +311,13 @@ export default function MyListView({
       <TouchableOpacity
         style={[styles.backRightBtn, styles.backRightBtnRight]}
         onPress={async () => {
-          await moveToGotItList([data.item._id], false);
-          deleteRow(rowMap, data.item._id);
+          if (screenName === "GotIt") {
+            await moveToNeedItList([data.item._id], false);
+            deleteRow(rowMap, data.item._id);
+          } else if (screenName === "NeedIt") {
+            await moveToGotIt([data.item._id], false);
+            deleteRow(rowMap, data.item._id);
+          }
         }}
       >
         <FontAwesome
@@ -322,7 +335,7 @@ export default function MyListView({
             },
           ]}
         >
-          Got it
+          {screenName === "GotIt" ? "Need It" : "Got it"}
         </Text>
       </TouchableOpacity>
     </View>

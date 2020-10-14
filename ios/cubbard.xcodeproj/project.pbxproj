@@ -20,6 +20,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C6873026CE93FFB4B9EAFEBB /* libPods-cubbard.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 38AF9228EBE6954ECCE73D89 /* libPods-cubbard.a */; };
 		E0CD0F35C92DFCC09CDD6EB1 /* libPods-cubbard-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4579043F29B6A83C9D759D75 /* libPods-cubbard-tvOSTests.a */; };
+		E15F18482536FA4A0068B89B /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15F18472536FA4A0068B89B /* File.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,8 @@
 		AEE73A01BBB15EE7BCFAC542 /* Pods-cubbard-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cubbard-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-cubbard-tvOS/Pods-cubbard-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
 		CC78543669C1B692F64E2EED /* Pods-cubbard.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cubbard.debug.xcconfig"; path = "Target Support Files/Pods-cubbard/Pods-cubbard.debug.xcconfig"; sourceTree = "<group>"; };
 		CF379E14FB6A738EBE612A16 /* Pods-cubbard-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-cubbard-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-cubbard-tvOSTests/Pods-cubbard-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E15F18462536FA4A0068B89B /* cubbard-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cubbard-Bridging-Header.h"; sourceTree = "<group>"; };
+		E15F18472536FA4A0068B89B /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		E171455E2533433700B894BF /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		E171455F2533433700B894BF /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		E17145602533433700B894BF /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
@@ -149,6 +152,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				E15F18472536FA4A0068B89B /* File.swift */,
+				E15F18462536FA4A0068B89B /* cubbard-Bridging-Header.h */,
 			);
 			name = cubbard;
 			sourceTree = "<group>";
@@ -334,7 +339,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1110;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -677,6 +682,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				E15F18482536FA4A0068B89B /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -718,6 +724,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 31D0BC1386F4B523BF2E76FF /* Pods-cubbard-cubbardTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -741,6 +748,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89BC40AC0476F01262E6343D /* Pods-cubbard-cubbardTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = cubbardTests/Info.plist;
@@ -774,6 +782,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = cubbard;
+				SWIFT_OBJC_BRIDGING_HEADER = "cubbard-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -796,6 +805,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = cubbard;
+				SWIFT_OBJC_BRIDGING_HEADER = "cubbard-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
