@@ -34,7 +34,7 @@ const Appbar = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("state", () => {
-      setMenuVisible(false);
+      // setMenuVisible(false);
     });
 
     checkIsAuthenticated();

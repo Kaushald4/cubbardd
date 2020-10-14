@@ -34,7 +34,7 @@ import {
 } from "../../services/NeedIt/needit";
 import { heightToDp, widthToDp } from "../../utils/dimensions";
 
-const { width, height, scale, fontScale } = Dimensions.get("window");
+const { width, height, fontScale } = Dimensions.get("window");
 
 const NeedItScreen = ({ navigation }: Props) => {
   const theme = useTheme();
