@@ -144,7 +144,18 @@ const SignupScreen = ({ navigation }: Props) => {
                   isSubmitting,
                 }) => {
                   return (
-                    <View>
+                    <View style={{ position: "relative" }}>
+                      <AntDesign
+                        name="mail"
+                        size={20}
+                        color="#494949"
+                        style={{
+                          top: 20,
+                          position: "absolute",
+                          zIndex: 1,
+                          paddingLeft: 10,
+                        }}
+                      />
                       <Field
                         name="email"
                         component={TextInput}
@@ -153,12 +164,13 @@ const SignupScreen = ({ navigation }: Props) => {
                         onBlur={handleBlur("email")}
                         value={values.email}
                         error={errors.email}
+                        placeholderTextColor="gray"
                         onFocus={() => (errors.email = undefined)}
                         style={{
                           height: 58,
                           backgroundColor: "#FFFFFF",
                           borderRadius: 5,
-                          paddingLeft: 10,
+                          paddingLeft: 38,
                           maxWidth: width * 0.9,
                         }}
                         disabled={isSubmitting}
@@ -181,6 +193,17 @@ const SignupScreen = ({ navigation }: Props) => {
                       <View style={{ paddingVertical: 4 }} />
 
                       <View style={{ position: "relative", zIndex: 1 }}>
+                        <AntDesign
+                          name="mail"
+                          size={20}
+                          color="#494949"
+                          style={{
+                            top: 20,
+                            position: "absolute",
+                            zIndex: 1,
+                            paddingLeft: 10,
+                          }}
+                        />
                         <Field
                           name="password"
                           component={TextInput}
@@ -192,13 +215,14 @@ const SignupScreen = ({ navigation }: Props) => {
                           onFocus={() => (errors.password = undefined)}
                           disabled={isSubmitting}
                           error={errors.password}
+                          placeholderTextColor="gray"
                           validate={validatePassword}
                           style={{
                             height: 58,
                             paddingRight: 70,
                             backgroundColor: "#FFFFFF",
                             borderRadius: 5,
-                            paddingLeft: 10,
+                            paddingLeft: 38,
                             width: width * 0.9,
                             maxWidth: width * 0.9,
                           }}
