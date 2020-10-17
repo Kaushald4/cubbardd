@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, useTheme } from "react-native-paper";
+import { widthToDp } from "../../utils";
 
 interface Props {
   title: string;
@@ -32,5 +33,6 @@ export default CustomButton;
 const styles = StyleSheet.create({
   button: {
     marginTop: 20,
+    width: widthToDp("75%"),
   },
 });

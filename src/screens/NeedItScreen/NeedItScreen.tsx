@@ -142,10 +142,18 @@ const NeedItScreen = ({ navigation }: Props) => {
       return item["_id"];
     });
     const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+    const userNotesData = await AsyncStorage.getItem("userNotes");
     if (isSkippedData && JSON.parse(isSkippedData)) {
       if (notesId.length > 1) {
-        await AsyncStorage.removeItem("userNotes");
-        setItems([]);
+        if (userNotesData) {
+          const userNotes = JSON.parse(userNotesData);
+          const newData = {
+            needIt: [],
+            gotIt: userNotes.gotIt,
+          };
+          await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+        }
+        await getAllNotes();
         setSelectedItems([]);
       } else {
         const userNotesData = await AsyncStorage.getItem("userNotes");
@@ -215,7 +223,6 @@ const NeedItScreen = ({ navigation }: Props) => {
     const newData = items.filter((el) => el._id !== id);
     setItems(newData);
   };
-  console.log(selectedItems);
 
   //TODO: refactor this to updateNote
   const updateNode = async () => {
@@ -268,60 +275,148 @@ const NeedItScreen = ({ navigation }: Props) => {
     isTapped: boolean
   ) => {
     try {
-      if (!isTapped) {
-        setIsLoading(true);
-        const userAuthData = await AsyncStorage.getItem("token");
-        if (userAuthData) {
-          const { token, id } = JSON.parse(userAuthData);
-          let newNotesId = [];
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (isSkippedData && JSON.parse(isSkippedData)) {
+        const userNotesData = await AsyncStorage.getItem("userNotes");
+
+        if (userNotesData) {
+          const userNotes = JSON.parse(userNotesData);
           if (selectedItems.length <= 1) {
-            newNotesId.push(...(notesID as Array<string>));
+            const filteredList = userNotes.needIt.filter(
+              (el: any) => el._id === notesID[0]
+            );
+            const filteredNeedItList = userNotes.needIt.filter(
+              (el: any) => el._id !== notesID[0]
+            );
+            filteredList[0].low = false;
+            const newData = {
+              needIt: filteredNeedItList,
+              gotIt: [...userNotes.gotIt, ...filteredList],
+            };
+            if (userNotes.gotIt.length > 1) {
+              return Alert.alert(
+                "Sign up to continue....",
+                "",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: async () => {
+                      await getAllNotes();
+                      setIsLowSelect(false);
+                      setIslow(false);
+                      setSelectedItems([]);
+                    },
+                    style: "cancel",
+                  },
+                  {
+                    text: "Sign up",
+                    onPress: () => navigation.navigate("SignUpScreen"),
+                  },
+                ],
+                { cancelable: false }
+              );
+              await getAllNotes();
+            } else {
+              await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+              await getAllNotes();
+            }
           } else {
-            const ids = selectedItems.map((el) => el["_id"]);
-            newNotesId.push(...ids);
+            //when more than one item selected
+            if (userNotes.gotIt.length > 1) {
+              return Alert.alert(
+                "Sign up to continue....",
+                "",
+                [
+                  {
+                    text: "Cancel",
+                    onPress: async () => {
+                      await getAllNotes();
+                      setIsLowSelect(false);
+                      setIslow(false);
+                      setSelectedItems([]);
+                    },
+                    style: "cancel",
+                  },
+                  {
+                    text: "Sign up",
+                    onPress: () => navigation.navigate("SignUpScreen"),
+                  },
+                ],
+                { cancelable: false }
+              );
+            } else {
+              userNotes.needIt[0].low = false;
+              userNotes.needIt[1].low = false;
+              const newData = {
+                needIt: [],
+                gotIt: userNotes.needIt,
+              };
+              await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+              await getAllNotes();
+            }
           }
-          await moveToGotIt({ userID: id, token, notesID: newNotesId });
-          setIsLoading(false);
-        } else {
-          console.log("Sign in to continue....");
         }
       } else {
-        Alert.alert(
-          "Would you like to move the item(s) to the Got It list?",
-          "",
-          [
-            {
-              text: "Cancel",
-              onPress: () => {},
-              style: "cancel",
-            },
-            {
-              text: "Move",
-              onPress: async () => {
-                setIsLoading(true);
-                const userAuthData = await AsyncStorage.getItem("token");
-                if (userAuthData) {
-                  const { token, id } = JSON.parse(userAuthData);
-                  let newNotesId = [];
-                  if (selectedItems.length <= 1) {
-                    newNotesId.push(...(notesID as Array<string>));
-                  } else {
-                    const ids = selectedItems.map((el) => el["_id"]);
-                    newNotesId.push(...ids);
-                  }
-                  await moveToGotIt({ userID: id, token, notesID: newNotesId });
-                  setIsLoading(false);
-                  setIslow(false);
-                  setSelectedItems([]);
-                  navigation.navigate("GotItScreen");
-                } else {
-                  console.log("Sign in to continue....");
-                }
+        //when user is authenticated
+        if (!isTapped) {
+          setIsLoading(true);
+          const userAuthData = await AsyncStorage.getItem("token");
+          if (userAuthData) {
+            const { token, id } = JSON.parse(userAuthData);
+            let newNotesId = [];
+            if (selectedItems.length <= 1) {
+              newNotesId.push(...(notesID as Array<string>));
+            } else {
+              const ids = selectedItems.map((el) => el["_id"]);
+              newNotesId.push(...ids);
+            }
+            await moveToGotIt({ userID: id, token, notesID: newNotesId });
+            setIsLoading(false);
+          } else {
+            console.log("Sign in to continue....");
+          }
+        } else {
+          Alert.alert(
+            "Would you like to move the item(s) to the Got It list?",
+            "",
+            [
+              {
+                text: "Cancel",
+                onPress: () => {},
+                style: "cancel",
               },
-            },
-          ],
-          { cancelable: false }
-        );
+              {
+                text: "Move",
+                onPress: async () => {
+                  setIsLoading(true);
+                  const userAuthData = await AsyncStorage.getItem("token");
+                  if (userAuthData) {
+                    const { token, id } = JSON.parse(userAuthData);
+                    let newNotesId = [];
+                    if (selectedItems.length <= 1) {
+                      newNotesId.push(...(notesID as Array<string>));
+                    } else {
+                      const ids = selectedItems.map((el) => el["_id"]);
+                      newNotesId.push(...ids);
+                    }
+                    await moveToGotIt({
+                      userID: id,
+                      token,
+                      notesID: newNotesId,
+                    });
+                    setIsLoading(false);
+                    setIslow(false);
+                    setSelectedItems([]);
+                    navigation.navigate("GotItScreen");
+                  } else {
+                    console.log("Sign in to continue....");
+                  }
+                },
+              },
+            ],
+            { cancelable: false }
+          );
+        }
       }
     } catch (error) {
       console.log(error);
@@ -331,27 +426,61 @@ const NeedItScreen = ({ navigation }: Props) => {
   const markNoteAsLow = async () => {
     selectedItems.forEach((el) => {
       if (el.low) {
-        setIslow(true);
+        setIsLowSelect(true);
       }
     });
+
     try {
-      const userAuthData = await AsyncStorage.getItem("token");
-      if (userAuthData) {
-        setIsLoading(true);
-        setIsLowSelect(true);
-        const { token, id } = JSON.parse(userAuthData);
-        const newNotes = selectedItems.map((el) => el["_id"]);
-        await markNeedItNotesLow({
-          userID: id,
-          notesID: newNotes,
-          token,
-        });
-        selectedItems.forEach((e) => (e.low = true));
-        selectedItems.length <= 1 ? setIslow(false) : setIslow(true);
-        setIsLoading(false);
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (isSkippedData && JSON.stringify(isSkippedData)) {
+        const userNotesData = await AsyncStorage.getItem("userNotes");
+        if (userNotesData) {
+          const userNotes = JSON.parse(userNotesData);
+          if (selectedItems.length <= 1) {
+            const filteredList = userNotes.needIt.filter(
+              (el: any) => el._id === selectedItems[0]._id
+            );
+            const preList = userNotes.needIt.filter(
+              (el: any) => el._id !== selectedItems[0]._id
+            );
+            filteredList[0].low = true;
+            const newData = {
+              needIt: [...filteredList, ...preList],
+              gotIt: userNotes.gotIt,
+            };
+            await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+          } else {
+            userNotes.needIt.forEach((e) => (e.low = true));
+            setIsLowSelect(true);
+            const newData = {
+              needIt: userNotes.needIt,
+              gotIt: userNotes.gotIt,
+            };
+            await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+            selectedItems.forEach((e) => (e.low = true));
+            selectedItems.length <= 1 ? setIslow(false) : setIslow(true);
+            setIsLoading(false);
+          }
+        }
       } else {
-        setIsLoading(false);
-        console.log("sign in to continue.....");
+        const userAuthData = await AsyncStorage.getItem("token");
+        if (userAuthData) {
+          setIsLoading(true);
+          setIsLowSelect(true);
+          const { token, id } = JSON.parse(userAuthData);
+          const newNotes = selectedItems.map((el) => el["_id"]);
+          await markNeedItNotesLow({
+            userID: id,
+            notesID: newNotes,
+            token,
+          });
+          selectedItems.forEach((e) => (e.low = true));
+          selectedItems.length <= 1 ? setIslow(false) : setIslow(true);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+          console.log("sign in to continue.....");
+        }
       }
     } catch (error) {
       console.log(error);
@@ -555,6 +684,7 @@ const NeedItScreen = ({ navigation }: Props) => {
                   moveToGotItList={moveToGotItList}
                   markNoteAsLow={markNoteAsLow}
                   islowSelect={isLowSelect}
+                  setLowSelect={setIsLowSelect}
                   screenName="NeedIt"
                   setMenuItemVisibel={setIsMenuItemShown}
                   clearPrevDataOnSwipe={clearPrevDataOnSwipe}

@@ -58,52 +58,60 @@ const AddItemScreen = ({ navigation, route }: Props) => {
       if (isSkippedData && JSON.parse(isSkippedData)) {
         if (screenName === "Need It") {
           // await AsyncStorage.removeItem("userNotes");
-          await addItemToAsyncStorage({
-            needIt: newItem,
-            action: "needIt",
-            navigation,
-          });
-          const userNotesData = await AsyncStorage.getItem("userNotes");
-          const userNotes = await JSON.parse(userNotesData as string);
+          if (note.length >= 4) {
+            await addItemToAsyncStorage({
+              needIt: newItem,
+              action: "needIt",
+              navigation,
+            });
+            const userNotesData = await AsyncStorage.getItem("userNotes");
+            const userNotes = await JSON.parse(userNotesData as string);
 
-          setItems(userNotes.needIt);
+            setItems(userNotes.needIt);
+          }
         } else {
-          await addItemToAsyncStorage({
-            gotIt: newItem,
-            action: "gotIt",
-            navigation,
-          });
-          const userNotesData = await AsyncStorage.getItem("userNotes");
-          const userNotes = await JSON.parse(userNotesData as string);
-          console.log(userNotes);
+          if (note.length >= 4) {
+            await addItemToAsyncStorage({
+              gotIt: newItem,
+              action: "gotIt",
+              navigation,
+            });
+            const userNotesData = await AsyncStorage.getItem("userNotes");
+            const userNotes = await JSON.parse(userNotesData as string);
+            console.log(userNotes);
 
-          setItems(userNotes.gotIt);
+            setItems(userNotes.gotIt);
+          }
         }
       } else {
         if (note) {
           setIsLoading(true);
           const authData = await AsyncStorage.getItem("token");
           const { token, id } = JSON.parse(authData as string);
-          if (screenName === "Need It") {
-            const createdItem = await createNeedItNotes({
-              note,
-              userID: id,
-              token,
-            });
-            setItems([...items, createdItem]);
-            setPlaceHolder("");
-            setTextFieldShown(false);
-            setIsLoading(false);
+          if (note.length >= 4) {
+            if (screenName === "Need It") {
+              const createdItem = await createNeedItNotes({
+                note,
+                userID: id,
+                token,
+              });
+              setItems([...items, createdItem]);
+              setPlaceHolder("");
+              setTextFieldShown(false);
+              setIsLoading(false);
+            }
           } else {
-            const createdItem = await createGotitNotes({
-              note,
-              userID: id,
-              token,
-            });
-            setItems([...items, createdItem]);
-            setPlaceHolder("");
-            setTextFieldShown(false);
-            setIsLoading(false);
+            if (note.length >= 4) {
+              const createdItem = await createGotitNotes({
+                note,
+                userID: id,
+                token,
+              });
+              setItems([...items, createdItem]);
+              setPlaceHolder("");
+              setTextFieldShown(false);
+              setIsLoading(false);
+            }
           }
         }
       }
@@ -114,7 +122,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <KeyboardAwareScrollView
         nestedScrollEnabled
         showsVerticalScrollIndicator={false}
@@ -193,7 +201,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                               <Fontawesome
                                 name="check-circle"
                                 color={
-                                  newItem.length > 1
+                                  newItem.length >= 4
                                     ? theme.colors.primary
                                     : theme.colors.disabled
                                 }
@@ -279,10 +287,10 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "absolute",
     zIndex: -1,
-    top: 80,
+    top: heightToDp("10%"),
   },
   wrapper: {
-    marginTop: (height / fontScale) * 0.1,
+    marginTop: heightToDp("14%"),
     paddingHorizontal: 20,
   },
   textInput: {

@@ -103,7 +103,7 @@ const LoginScreen = ({ navigation }: Props) => {
           style={{
             height:
               Platform.OS === "android"
-                ? heightToDp("100%") - Constants.statusBarHeight
+                ? heightToDp("102%") - Constants.statusBarHeight
                 : heightToDp("97%"),
             width,
             justifyContent: "space-between",
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     flex: 5,
   },
   formContainer: {
-    marginTop: heightToDp("2%"),
+    // marginTop: heightToDp("5%"),
     // marginBottom: heightToDp("9%"),
   },
   bottomButton: {

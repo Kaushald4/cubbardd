@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, View, Image, Dimensions } from "react-native";
+import { widthToDp } from "../../utils";
 
 const { height, width } = Dimensions.get("screen");
 
@@ -8,8 +9,8 @@ const Logo = () => {
     <View
       style={{
         backgroundColor: "#FFFFFF",
-        width: width * 0.34,
-        height: width * 0.34,
+        width: widthToDp("34%"),
+        height: widthToDp("34%"),
         borderRadius: 500,
         justifyContent: "center",
         alignItems: "center",

@@ -45,6 +45,7 @@ interface Props {
   screenName: "NeedIt" | "GotIt";
   setMenuItemVisibel: (b: boolean) => void;
   clearPrevDataOnSwipe: (id: string) => void;
+  setLowSelect: (b: boolean) => void;
 }
 
 export default function MyListView({
@@ -61,6 +62,7 @@ export default function MyListView({
   moveToNeedItList,
   setMenuItemVisibel,
   clearPrevDataOnSwipe,
+  setLowSelect,
 }: Props) {
   const theme = useTheme();
   const [listData, setListData] = useState(data);
@@ -68,6 +70,20 @@ export default function MyListView({
   useEffect(() => {
     setListData(data);
   }, [data, islowSelect, selectedItems]);
+
+  useEffect(() => {
+    let low = false;
+    selectedItems.forEach((e) => {
+      if (e.low) {
+        low = true;
+      } else {
+        low = false;
+      }
+    });
+    if (low) {
+      setLowSelect(true);
+    }
+  }, [selectedItems]);
 
   const closeRow = (
     rowMap: any,

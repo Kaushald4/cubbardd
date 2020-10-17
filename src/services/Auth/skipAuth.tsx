@@ -54,7 +54,7 @@ export const addItemToAsyncStorage = async ({
           } else {
             const needItData = [
               ...userNotes.needIt,
-              { _id: create_id(), note: needIt },
+              { _id: create_id(), note: needIt, low: false },
             ];
             const newData = {
               needIt: needItData,
@@ -83,7 +83,7 @@ export const addItemToAsyncStorage = async ({
         } else {
           const gotItData = [
             ...userNotes.gotIt,
-            { _id: create_id(), note: gotIt },
+            { _id: create_id(), note: gotIt, low: false },
           ];
           const newData = {
             needIt: userNotes.needIt,
@@ -94,7 +94,7 @@ export const addItemToAsyncStorage = async ({
         }
       } else {
         if (action === "needIt") {
-          const needItData = [{ _id: create_id(), note: needIt }];
+          const needItData = [{ _id: create_id(), note: needIt, low: false }];
           const newData = {
             needIt: needItData,
             gotIt: [],
@@ -102,7 +102,7 @@ export const addItemToAsyncStorage = async ({
           await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
           return needItData;
         } else {
-          const gotItData = [{ _id: create_id(), note: gotIt }];
+          const gotItData = [{ _id: create_id(), note: gotIt, low: false }];
           const newData = {
             needIt: [],
             gotIt: gotItData,
