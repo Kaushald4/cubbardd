@@ -19,7 +19,6 @@ import {
   SwipeListView,
 } from "react-native-swipe-list-view";
 import { useTheme } from "react-native-paper";
-import { moveToGotIt } from "../../services";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -45,6 +44,7 @@ interface Props {
   islowSelect: boolean;
   screenName: "NeedIt" | "GotIt";
   setMenuItemVisibel: (b: boolean) => void;
+  clearPrevDataOnSwipe: (id: string) => void;
 }
 
 export default function MyListView({
@@ -60,6 +60,7 @@ export default function MyListView({
   screenName,
   moveToNeedItList,
   setMenuItemVisibel,
+  clearPrevDataOnSwipe,
 }: Props) {
   const theme = useTheme();
   const [listData, setListData] = useState(data);
@@ -112,7 +113,7 @@ export default function MyListView({
     setSelectedItems(selectedData);
   };
 
-  const renderItem = (data: any) => {
+  const renderItem = (data: any, rowMap: any) => {
     const opacity = selectedItems.length >= 1 && !data.item.selected ? 0.5 : 1;
     let backgroundColor;
     if (
@@ -127,10 +128,18 @@ export default function MyListView({
     }
 
     return (
-      <TouchableHighlight
+      <Pressable
+        android_ripple={{ color: theme.colors.primary }}
         onPress={() => onSelectHandle(data.item._id)}
-        style={[styles.rowFront, { opacity }, { backgroundColor }]}
-        underlayColor={"#AAA"}
+        onLongPress={() => updateNote(data.item.note, data.item._id)}
+        style={[
+          styles.rowFront,
+          { opacity },
+          {
+            backgroundColor,
+            // display: swipedListID === data.item._id ? "none" : "flex",
+          },
+        ]}
       >
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -224,17 +233,27 @@ export default function MyListView({
             </Pressable>
           </View>
         </View>
-      </TouchableHighlight>
+      </Pressable>
     );
   };
 
   const onSwipeEnd = async (id: string, Swipedata: SwipeGestureEndedData) => {
     if (Swipedata.translateX >= width * 0.2) {
       if (screenName === "NeedIt") {
-        console.log(id);
+        await moveToGotItList([id], false);
+        clearPrevDataOnSwipe(id);
+      } else if (screenName === "GotIt") {
+        await moveToNeedItList([id], false);
+        clearPrevDataOnSwipe(id);
       }
     } else if (Swipedata.translateX <= -width * 0.2) {
-      console.log("akndksndkn");
+      if (screenName === "NeedIt") {
+        await moveToGotItList([id], false);
+        clearPrevDataOnSwipe(id);
+      } else if (screenName === "GotIt") {
+        await moveToNeedItList([id], false);
+        clearPrevDataOnSwipe(id);
+      }
     }
   };
 
@@ -364,11 +383,10 @@ export default function MyListView({
         rightOpenValue={-150}
         nestedScrollEnabled
         previewRowKey={"0"}
-        previewOpenValue={-40}
-        previewOpenDelay={3000}
+        // previewOpenValue={-40}
+        // previewOpenDelay={3000}
         // stopLeftSwipe={width * 0.4}
         // stopRightSwipe={-width * 0.4}
-        persistentScrollbar
         // onRowDidOpen={onRowDidOpen}
         keyExtractor={(item, index) => `${item._id}`}
         disableLeftSwipe={selectedItems.length > 0 ? true : false}

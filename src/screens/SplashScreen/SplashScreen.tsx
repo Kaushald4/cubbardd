@@ -81,13 +81,7 @@ const MySplashScreen = ({ navigation }: Props) => {
         style={{ justifyContent: "center", alignItems: "center", flex: 1 }}
         color={theme.colors.accent}
       />
-      <View>
-        <Text style={{ fontFamily: "Ubuntu-Regular", paddingBottom: 5 }}>
-          Mn4Soft
-          {/* Made with at <View />
-          <AntDesign name="heart" color="#000000" /> ThyDreams Studio. */}
-        </Text>
-      </View>
+      <View></View>
     </SafeAreaView>
   );
 };

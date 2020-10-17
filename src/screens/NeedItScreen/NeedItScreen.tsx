@@ -78,6 +78,7 @@ const NeedItScreen = ({ navigation }: Props) => {
         }
       } else {
         //user is signed in fetch notes from server
+        setIsLoading(true);
         const authData = await AsyncStorage.getItem("token");
         if (authData) {
           const { token, id } = JSON.parse(authData as string);
@@ -85,8 +86,10 @@ const NeedItScreen = ({ navigation }: Props) => {
           if (!data.error) {
             if (data.notes.length <= 0) {
               setItems([]);
+              setIsLoading(false);
             } else {
               setItems(data.notes.needIt);
+              setIsLoading(false);
             }
             setIsLoading(false);
           }
@@ -208,6 +211,12 @@ const NeedItScreen = ({ navigation }: Props) => {
     setPopupTextFieldShown(true);
   };
 
+  const clearPrevDataOnSwipe = (id: string) => {
+    const newData = items.filter((el) => el._id !== id);
+    setItems(newData);
+  };
+  console.log(selectedItems);
+
   //TODO: refactor this to updateNote
   const updateNode = async () => {
     Keyboard.dismiss();
@@ -272,6 +281,7 @@ const NeedItScreen = ({ navigation }: Props) => {
             newNotesId.push(...ids);
           }
           await moveToGotIt({ userID: id, token, notesID: newNotesId });
+          setIsLoading(false);
         } else {
           console.log("Sign in to continue....");
         }
@@ -337,7 +347,7 @@ const NeedItScreen = ({ navigation }: Props) => {
           token,
         });
         selectedItems.forEach((e) => (e.low = true));
-        selectedItems.length <= 1 ? setIslow(false) : undefined;
+        selectedItems.length <= 1 ? setIslow(false) : setIslow(true);
         setIsLoading(false);
       } else {
         setIsLoading(false);
@@ -547,6 +557,7 @@ const NeedItScreen = ({ navigation }: Props) => {
                   islowSelect={isLowSelect}
                   screenName="NeedIt"
                   setMenuItemVisibel={setIsMenuItemShown}
+                  clearPrevDataOnSwipe={clearPrevDataOnSwipe}
                 />
               </View>
             ) : (

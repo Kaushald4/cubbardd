@@ -1,7 +1,7 @@
 import "react-native-gesture-handler";
 import React, { useEffect } from "react";
 import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
-
+import { MenuProvider } from "react-native-popup-menu";
 import { DefaultTheme as NavigationTheme } from "@react-navigation/native";
 import {
   DefaultTheme as PaperTheme,
@@ -39,7 +39,9 @@ const App = () => {
     <PaperProvider theme={combinedTheme}>
       <StatusBar translucent />
       <LoadAssets>
-        <Main theme={combinedTheme} />
+        <MenuProvider>
+          <Main theme={combinedTheme} />
+        </MenuProvider>
       </LoadAssets>
     </PaperProvider>
   );

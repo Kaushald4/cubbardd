@@ -76,6 +76,7 @@ const GotItScreen = ({ navigation }: Props) => {
         }
       } else {
         //user is signed in
+        setIsLoading(true);
         const authData = await AsyncStorage.getItem("token");
         if (authData) {
           const { token, id } = JSON.parse(authData as string);
@@ -84,8 +85,10 @@ const GotItScreen = ({ navigation }: Props) => {
           if (!data.error) {
             if (data.notes.length <= 0) {
               setItems([]);
+              setIsLoading(false);
             } else {
               setItems(data.notes.gotIt);
+              setIsLoading(false);
             }
             setIsLoading(false);
           }
@@ -131,6 +134,11 @@ const GotItScreen = ({ navigation }: Props) => {
       setIsLoading(false);
       console.log(error);
     }
+  };
+
+  const clearPrevDataOnSwipe = (id: string) => {
+    const newData = items.filter((el) => el._id !== id);
+    setItems(newData);
   };
 
   const deleteItem = async () => {
@@ -206,7 +214,6 @@ const GotItScreen = ({ navigation }: Props) => {
   ) => {
     setUpdatedNote({ id: id as string, note: prevNote as string });
     setPopupTextFieldShown(true);
-    console.log(updatedNote);
   };
   const updateNode = async () => {
     Keyboard.dismiss();
@@ -271,6 +278,7 @@ const GotItScreen = ({ navigation }: Props) => {
             newNotesId.push(...ids);
           }
           await moveToNeedIt({ userID: id, token, notesID: newNotesId });
+          setIsLoading(false);
         } else {
           console.log("Sign in to continue....");
         }
@@ -548,6 +556,7 @@ const GotItScreen = ({ navigation }: Props) => {
                   moveToGotItList={moveToNeedItList}
                   screenName="GotIt"
                   setMenuItemVisibel={setIsMenuItemShown}
+                  clearPrevDataOnSwipe={clearPrevDataOnSwipe}
                 />
               </View>
             ) : (

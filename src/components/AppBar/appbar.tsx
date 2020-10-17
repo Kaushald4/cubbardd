@@ -5,14 +5,18 @@ import {
   Dimensions,
   Platform,
   StyleSheet,
-  Text,
   View,
   TouchableOpacity,
-  Pressable,
+  Text,
   Alert,
-  Keyboard,
 } from "react-native";
-import { Menu, useTheme } from "react-native-paper";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from "react-native-popup-menu";
+import { useTheme } from "react-native-paper";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MyText from "../MyText/MyText";
 import { signout } from "../../services";
@@ -58,67 +62,42 @@ const Appbar = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => {
-          setMenuVisible(!isMenuShown);
-        }}
-        style={{ position: "relative" }}
-      >
-        <FontAwesome
-          name="user-circle-o"
-          size={24 / fontScale}
-          style={{ paddingHorizontal: 20 }}
-          color={theme.colors.accent}
-        />
-      </TouchableOpacity>
-      {isMenuShown && (
-        <View
-          style={{
-            position: "absolute",
-            // height: heightToDp("10.8%"),
-            width: widthToDp("40%"),
-            backgroundColor: "#FFFFFF",
-            top:
-              Platform.OS === "android"
-                ? heightToDp("4%") + Constants.statusBarHeight
-                : heightToDp("5.8%"),
-            right: 80,
-            elevation: 20,
-            shadowColor: "rgba(0,0,0,.4)",
-            shadowOpacity: 1,
-            shadowOffset: { height: 0, width: 0 },
-            shadowRadius: 2,
-            borderRadius: 5,
+      <Menu>
+        <MenuTrigger>
+          <FontAwesome
+            name="user-circle-o"
+            size={24 / fontScale}
+            style={{ paddingHorizontal: 20 }}
+            color={theme.colors.accent}
+          />
+        </MenuTrigger>
+        <MenuOptions
+          customStyles={{
+            optionWrapper: { paddingVertical: 10, marginHorizontal: 10 },
           }}
         >
           {!isUser && (
-            <Menu.Item
-              onPress={() => {
-                navigation.navigate("SignUpScreen");
-              }}
-              title={
-                <MyText
-                  text="Create Profile"
-                  size={widthToDp("3.4%")}
-                  color="#000000"
-                />
-              }
-            />
-          )}
-          <Menu.Item
-            onPress={() => {
-              Alert.alert("Updating Soon....");
-            }}
-            title={
+            <MenuOption onSelect={() => navigation.navigate("SignUpScreen")}>
               <MyText
-                text="Terms & Conditions"
-                size={widthToDp("3.4%")}
+                text="Create Profile"
                 color="#000000"
+                size={widthToDp("3.4%")}
               />
-            }
-          />
-        </View>
-      )}
+            </MenuOption>
+          )}
+          <MenuOption
+            onSelect={() => {
+              Alert.alert("Updating....");
+            }}
+          >
+            <MyText
+              text="Terms & Conditions"
+              color="#000000"
+              size={widthToDp("3.4%")}
+            />
+          </MenuOption>
+        </MenuOptions>
+      </Menu>
       <TouchableOpacity
         onPress={() => {
           signout(navigation);
@@ -140,7 +119,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    paddingTop: Platform.OS === "android" ? 30 : 20,
+    paddingTop: Platform.OS === "android" ? heightToDp("7%") : 20,
     paddingHorizontal: 30,
     position: "relative",
   },
