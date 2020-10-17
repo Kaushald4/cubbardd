@@ -4,9 +4,10 @@ import {
   createStackNavigator,
   TransitionSpecs,
 } from "@react-navigation/stack";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NeedItScreen, GotItScreen } from "../screens";
 import AddItemScreen from "../screens/AddItemScreen/AddItemScreen";
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 
 export type AppStackParamList = {
   NeedItScreen: undefined;
@@ -20,6 +21,7 @@ const AppStackNavigator = () => {
   return (
     <AppStack.Navigator
       screenOptions={{
+        headerShown: false,
         cardStyleInterpolator:
           Platform.OS === "android"
             ? CardStyleInterpolators.forScaleFromCenterAndroid

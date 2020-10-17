@@ -30,7 +30,12 @@ import {
   LoadingIndicator,
 } from "../../components";
 import { Props } from "./types";
-import { heightToDp, validateEmail, validatePassword } from "../../utils";
+import {
+  heightToDp,
+  validateEmail,
+  validatePassword,
+  widthToDp,
+} from "../../utils";
 import {
   loginWithEmailAndPassword,
   logInWithFacebook,
@@ -77,9 +82,12 @@ const LoginScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.primary }]}
-    >
+    <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="dark-content"
+      />
       <LoadingIndicator
         isVisible={isFromSubmitting || isFbloading}
         title={""}
@@ -95,8 +103,8 @@ const LoginScreen = ({ navigation }: Props) => {
           style={{
             height:
               Platform.OS === "android"
-                ? heightToDp("98%") - Constants.statusBarHeight
-                : heightToDp("90%"),
+                ? heightToDp("100%") - Constants.statusBarHeight
+                : heightToDp("97%"),
             width,
             justifyContent: "space-between",
           }}
@@ -111,6 +119,7 @@ const LoginScreen = ({ navigation }: Props) => {
               color="#FFFFFF"
               ff="Ubuntu-Bold"
             />
+            <View style={{ height: heightToDp("4%") }} />
 
             <View style={styles.formContainer}>
               <Formik
@@ -152,7 +161,7 @@ const LoginScreen = ({ navigation }: Props) => {
                 }) => {
                   return (
                     <View style={{ position: "relative" }}>
-                      <AntDesign
+                      {/* <AntDesign
                         name="mail"
                         size={20}
                         color="#494949"
@@ -162,7 +171,7 @@ const LoginScreen = ({ navigation }: Props) => {
                           zIndex: 1,
                           paddingLeft: 10,
                         }}
-                      />
+                      /> */}
                       <Field
                         name="email"
                         component={TextInput}
@@ -177,8 +186,9 @@ const LoginScreen = ({ navigation }: Props) => {
                           height: 58,
                           backgroundColor: "#FFFFFF",
                           borderRadius: 5,
-                          paddingLeft: 38,
+                          paddingLeft: 10,
                           maxWidth: width * 0.9,
+                          width: widthToDp("75%"),
                         }}
                         disabled={isSubmitting}
                         validate={validateEmail}
@@ -200,7 +210,7 @@ const LoginScreen = ({ navigation }: Props) => {
                       <View style={{ paddingVertical: 4 }} />
 
                       <View style={{ position: "relative", zIndex: 1 }}>
-                        <AntDesign
+                        {/* <AntDesign
                           name="key"
                           size={20}
                           color="#494949"
@@ -210,7 +220,7 @@ const LoginScreen = ({ navigation }: Props) => {
                             zIndex: 1,
                             paddingLeft: 10,
                           }}
-                        />
+                        /> */}
                         <Field
                           name="password"
                           component={TextInput}
@@ -229,8 +239,8 @@ const LoginScreen = ({ navigation }: Props) => {
                             paddingRight: 70,
                             backgroundColor: "#FFFFFF",
                             borderRadius: 5,
-                            paddingLeft: 38,
-                            width: width * 0.9,
+                            paddingLeft: 10,
+                            width: widthToDp("75%"),
                             maxWidth: width * 0.9,
                           }}
                         />
@@ -398,7 +408,7 @@ const LoginScreen = ({ navigation }: Props) => {
           </View>
         </View>
       </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -413,19 +423,22 @@ const styles = StyleSheet.create({
     top:
       Platform.OS === "android"
         ? -width * 0.99 + Constants.statusBarHeight
-        : -width * 0.9,
+        : -width * 0.95,
   },
   wrapper: {
     justifyContent: "center",
     alignItems: "center",
+    flex: 5,
   },
   formContainer: {
     marginTop: heightToDp("2%"),
+    // marginBottom: heightToDp("9%"),
   },
   bottomButton: {
     flexDirection: "row",
     paddingBottom: Platform.OS === "android" ? 0 : 0,
     justifyContent: "space-between",
+    // flex: 0.5,
   },
   errorInfo: {
     fontSize: 13,

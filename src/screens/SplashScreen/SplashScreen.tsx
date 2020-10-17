@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, SafeAreaView, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  View,
+  SafeAreaView,
+  Dimensions,
+  StatusBar,
+} from "react-native";
 import { useTheme, ActivityIndicator, Text } from "react-native-paper";
 import Animated, {
   timing,

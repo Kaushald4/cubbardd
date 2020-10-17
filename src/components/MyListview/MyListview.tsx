@@ -14,7 +14,10 @@ import {
 import { Constants } from "react-native-unimodules";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import { SwipeListView } from "react-native-swipe-list-view";
+import {
+  SwipeGestureEndedData,
+  SwipeListView,
+} from "react-native-swipe-list-view";
 import { useTheme } from "react-native-paper";
 import { moveToGotIt } from "../../services";
 
@@ -225,6 +228,16 @@ export default function MyListView({
     );
   };
 
+  const onSwipeEnd = async (id: string, Swipedata: SwipeGestureEndedData) => {
+    if (Swipedata.translateX >= width * 0.2) {
+      if (screenName === "NeedIt") {
+        console.log(id);
+      }
+    } else if (Swipedata.translateX <= -width * 0.2) {
+      console.log("akndksndkn");
+    }
+  };
+
   const renderHiddenItem = (data: any, rowMap: any) => (
     <View
       style={[
@@ -346,18 +359,21 @@ export default function MyListView({
       <SwipeListView
         data={listData}
         renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
+        renderHiddenItem={() => <View />}
         leftOpenValue={150}
         rightOpenValue={-150}
+        nestedScrollEnabled
         previewRowKey={"0"}
         previewOpenValue={-40}
         previewOpenDelay={3000}
-        stopLeftSwipe={width * 0.4}
-        stopRightSwipe={-width * 0.4}
+        // stopLeftSwipe={width * 0.4}
+        // stopRightSwipe={-width * 0.4}
+        persistentScrollbar
         // onRowDidOpen={onRowDidOpen}
         keyExtractor={(item, index) => `${item._id}`}
         disableLeftSwipe={selectedItems.length > 0 ? true : false}
         disableRightSwipe={selectedItems.length > 0 ? true : false}
+        swipeGestureEnded={onSwipeEnd}
       />
     </View>
   );

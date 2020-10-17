@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import React, { useEffect } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
 
 import { DefaultTheme as NavigationTheme } from "@react-navigation/native";
 import {
@@ -37,6 +37,7 @@ const combinedTheme = deepMerge(myNavigationTheme, myPaperTheme);
 const App = () => {
   return (
     <PaperProvider theme={combinedTheme}>
+      <StatusBar translucent />
       <LoadAssets>
         <Main theme={combinedTheme} />
       </LoadAssets>

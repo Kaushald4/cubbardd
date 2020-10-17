@@ -113,7 +113,6 @@ export async function signupWithFacebook() {
                 id,
                 name,
               };
-
               //calling backend server to store this user
               const userDataServer = await fetch(`${BASE_URI}/signupfacebook`, {
                 method: "POST",
@@ -121,6 +120,7 @@ export async function signupWithFacebook() {
                 body: JSON.stringify(newUserData),
               });
               const savedUser = await userDataServer.json();
+
               //TODO: store only token and userID in async storage
               if (savedUser.token) {
                 await AsyncStorage.removeItem("skippedAuth");

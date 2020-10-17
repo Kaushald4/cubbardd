@@ -126,7 +126,6 @@ const AddItemScreen = ({ navigation, route }: Props) => {
           onPress={() => Keyboard.dismiss()}
           style={{ height }}
         >
-          <MyAppbar />
           <ImageBackground
             style={styles.backgroundOverlay}
             source={require("../../assets/bg.png")}

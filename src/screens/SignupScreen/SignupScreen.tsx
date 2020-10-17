@@ -29,7 +29,12 @@ import {
 } from "../../components";
 import { Props } from "./types";
 import { signupUserWithEmailAndPassowrd } from "../../services/Auth/signup";
-import { heightToDp, validateEmail, validatePassword } from "../../utils";
+import {
+  heightToDp,
+  validateEmail,
+  validatePassword,
+  widthToDp,
+} from "../../utils";
 import { signupWithFacebook, skipAuth } from "../../services";
 
 const { width, height } = Dimensions.get("window");
@@ -71,9 +76,12 @@ const SignupScreen = ({ navigation }: Props) => {
   };
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.primary }]}
-    >
+    <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
+      <StatusBar
+        backgroundColor="transparent"
+        translucent
+        barStyle="dark-content"
+      />
       <LoadingIndicator
         isVisible={isFromSubmitting || isFbLoading}
         title={"Creating your account.."}
@@ -89,8 +97,8 @@ const SignupScreen = ({ navigation }: Props) => {
           style={{
             height:
               Platform.OS === "android"
-                ? heightToDp("98%") - Constants.statusBarHeight
-                : heightToDp("90%"),
+                ? heightToDp("100%") - Constants.statusBarHeight
+                : heightToDp("97%"),
             width,
             justifyContent: "space-between",
           }}
@@ -106,7 +114,9 @@ const SignupScreen = ({ navigation }: Props) => {
               ff="Ubuntu-Bold"
             />
 
-            <View style={styles.formContainer}>
+            <View style={{ height: heightToDp("4%") }} />
+
+            <View style={[styles.formContainer]}>
               <Formik
                 initialValues={{ email: "", password: "" }}
                 validateOnBlur={false}
@@ -145,7 +155,7 @@ const SignupScreen = ({ navigation }: Props) => {
                 }) => {
                   return (
                     <View style={{ position: "relative" }}>
-                      <AntDesign
+                      {/* <AntDesign
                         name="mail"
                         size={20}
                         color="#494949"
@@ -155,7 +165,7 @@ const SignupScreen = ({ navigation }: Props) => {
                           zIndex: 1,
                           paddingLeft: 10,
                         }}
-                      />
+                      /> */}
                       <Field
                         name="email"
                         component={TextInput}
@@ -170,8 +180,9 @@ const SignupScreen = ({ navigation }: Props) => {
                           height: 58,
                           backgroundColor: "#FFFFFF",
                           borderRadius: 5,
-                          paddingLeft: 38,
+                          paddingLeft: 10,
                           maxWidth: width * 0.9,
+                          width: widthToDp("75%"),
                         }}
                         disabled={isSubmitting}
                         validate={validateEmail}
@@ -193,8 +204,8 @@ const SignupScreen = ({ navigation }: Props) => {
                       <View style={{ paddingVertical: 4 }} />
 
                       <View style={{ position: "relative", zIndex: 1 }}>
-                        <AntDesign
-                          name="mail"
+                        {/* <AntDesign
+                          name="key"
                           size={20}
                           color="#494949"
                           style={{
@@ -203,7 +214,7 @@ const SignupScreen = ({ navigation }: Props) => {
                             zIndex: 1,
                             paddingLeft: 10,
                           }}
-                        />
+                        /> */}
                         <Field
                           name="password"
                           component={TextInput}
@@ -222,8 +233,8 @@ const SignupScreen = ({ navigation }: Props) => {
                             paddingRight: 70,
                             backgroundColor: "#FFFFFF",
                             borderRadius: 5,
-                            paddingLeft: 38,
-                            width: width * 0.9,
+                            paddingLeft: 10,
+                            width: widthToDp("75%"),
                             maxWidth: width * 0.9,
                           }}
                         />
@@ -384,7 +395,7 @@ const SignupScreen = ({ navigation }: Props) => {
           </View>
         </View>
       </KeyboardAwareScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -399,14 +410,14 @@ const styles = StyleSheet.create({
     top:
       Platform.OS === "android"
         ? -width * 0.99 + Constants.statusBarHeight
-        : -width * 0.9,
+        : -width * 0.95,
   },
   wrapper: {
     justifyContent: "center",
     alignItems: "center",
   },
   formContainer: {
-    marginTop: height * 0.05,
+    marginTop: heightToDp("2%"),
   },
   bottomButton: {
     flexDirection: "row",

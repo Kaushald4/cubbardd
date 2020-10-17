@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   Alert,
   Keyboard,
+  StatusBar,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -648,7 +649,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     height:
       Platform.OS === "android"
-        ? heightToDp("80%")
+        ? heightToDp("75%")
         : (height / fontScale) * 0.8,
   },
   bottomText: {

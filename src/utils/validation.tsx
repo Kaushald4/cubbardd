@@ -15,15 +15,15 @@ export function validatePassword(value: string) {
   if (!value) {
     error = "Please enter your details";
   } else if (value.length < 8) {
-    error = "Password should contain atleast 8 characters";
+    error = "Password should contain at least 8 characters";
   } else if (!value.match(/[A-Z]/)) {
-    error = "Contains atleast one uppercase";
+    error = "Password should contain at least one uppercase";
   } else if (!value.match(/[a-z]/)) {
-    error = "Contains atleast one lowercase";
+    error = "Password should contain at least one lowercase";
   } else if (!value.match(/[0-9]/)) {
-    error = "Contains atleast one number";
+    error = "Password should contain at least one number";
   } else if (!value.match(/^(?=.*[@#$%^&+=?:*%\-\)\(!)]).*$/)) {
-    error = "Contains atleast one special character";
+    error = "Password should contain at least one special character";
   }
   return error;
 }
