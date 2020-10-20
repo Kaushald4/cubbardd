@@ -106,7 +106,7 @@ const PopuptextField = ({
                     <Fontawesome
                       name="check-circle"
                       color={
-                        note.length > 1
+                        note.length >= 4
                           ? theme.colors.primary
                           : theme.colors.disabled
                       }

@@ -315,10 +315,10 @@ const NeedItScreen = ({ navigation }: Props) => {
                 ],
                 { cancelable: false }
               );
-              await getAllNotes();
             } else {
               await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
               await getAllNotes();
+              setSelectedItems([]);
             }
           } else {
             //when more than one item selected
@@ -437,6 +437,7 @@ const NeedItScreen = ({ navigation }: Props) => {
         if (userNotesData) {
           const userNotes = JSON.parse(userNotesData);
           if (selectedItems.length <= 1) {
+            setIsLowSelect(true);
             const filteredList = userNotes.needIt.filter(
               (el: any) => el._id === selectedItems[0]._id
             );
@@ -444,11 +445,15 @@ const NeedItScreen = ({ navigation }: Props) => {
               (el: any) => el._id !== selectedItems[0]._id
             );
             filteredList[0].low = true;
+
             const newData = {
               needIt: [...filteredList, ...preList],
               gotIt: userNotes.gotIt,
             };
             await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+            setIsLowSelect(false);
+            setIsLoading(false);
+            setIsLowSelect(true);
           } else {
             userNotes.needIt.forEach((e) => (e.low = true));
             setIsLowSelect(true);

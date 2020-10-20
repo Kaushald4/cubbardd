@@ -201,6 +201,7 @@ const LoginScreen = ({ navigation }: Props) => {
                             {
                               color: theme.colors.error,
                               borderColor: theme.colors.error,
+                              width: widthToDp("75%"),
                             },
                           ]}
                         >
@@ -349,6 +350,7 @@ const LoginScreen = ({ navigation }: Props) => {
                               {
                                 color: theme.colors.error,
                                 borderColor: theme.colors.error,
+                                width: widthToDp("75%"),
                               },
                             ]}
                           >
@@ -363,7 +365,7 @@ const LoginScreen = ({ navigation }: Props) => {
                           disabled={isSubmitting}
                         />
                         <MyText
-                          text="OR"
+                          text="OR..."
                           color={theme.colors.placeholder}
                           size={14}
                           pt={18}
@@ -445,7 +447,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f7b2b3",
     borderRadius: 3,
     borderWidth: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     marginTop: 2,
   },
 });

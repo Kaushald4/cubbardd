@@ -320,6 +320,7 @@ const GotItScreen = ({ navigation }: Props) => {
             } else {
               await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
               await getAllNotes();
+              setSelectedItems([]);
             }
           } else {
             //when more than one item selected
@@ -437,6 +438,7 @@ const GotItScreen = ({ navigation }: Props) => {
         if (userNotesData) {
           const userNotes = JSON.parse(userNotesData);
           if (selectedItems.length <= 1) {
+            setIsLowSelect(true);
             const filteredList = userNotes.gotIt.filter(
               (el: any) => el._id === selectedItems[0]._id
             );
@@ -449,6 +451,9 @@ const GotItScreen = ({ navigation }: Props) => {
               gotIt: [...filteredList, ...preList],
             };
             await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
+            setIsLowSelect(false);
+            setIsLoading(false);
+            setIsLowSelect(true);
           } else {
             userNotes.gotIt.forEach((e: any) => (e.low = true));
             setIsLowSelect(true);

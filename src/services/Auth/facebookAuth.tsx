@@ -50,7 +50,7 @@ export async function logInWithFacebook() {
                 await AsyncStorage.removeItem("skippedAuth");
                 await saveAsyncItemToDB({
                   token: savedUser.token,
-                  userID: savedUser._id,
+                  userID: savedUser.user._id,
                 });
                 AsyncStorage.setItem(
                   "token",

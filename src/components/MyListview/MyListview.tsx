@@ -143,6 +143,13 @@ export default function MyListView({
       backgroundColor = "#FFFFFF";
     }
 
+    console.log(
+      islowSelect,
+      selectedItems.length > 0,
+      data.item.selected,
+      data.item.low
+    );
+
     return (
       <Pressable
         android_ripple={{ color: theme.colors.primary }}
