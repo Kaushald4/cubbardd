@@ -41,6 +41,7 @@ import {
   logInWithFacebook,
   skipAuth,
 } from "../../services";
+import SimpleToast from "react-native-simple-toast";
 
 const { width, height } = Dimensions.get("window");
 
@@ -76,6 +77,7 @@ const LoginScreen = ({ navigation }: Props) => {
     } else if (user.cancel) {
       setFbLoading(false);
     } else if (user.token) {
+      SimpleToast.show("Signed in successfully.");
       navigation.replace("Home");
       console.log(user);
     }
@@ -135,7 +137,6 @@ const LoginScreen = ({ navigation }: Props) => {
                       email: values.email.toLowerCase(),
                       password: values.password,
                     });
-                    console.log(values.password);
                     if (user.error) {
                       actions.setSubmitting(false);
                       setFormSubmitting(false);
@@ -143,6 +144,7 @@ const LoginScreen = ({ navigation }: Props) => {
                     } else if (user.token) {
                       actions.setSubmitting(false);
                       setFormSubmitting(false);
+                      SimpleToast.show("Signed in successfully.");
                       navigation.replace("Home");
                     }
                   } catch (error) {

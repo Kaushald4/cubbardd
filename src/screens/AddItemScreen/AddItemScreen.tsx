@@ -8,6 +8,7 @@ import {
   StyleSheet,
   View,
   TextInput,
+  Alert,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import Fontawesome from "react-native-vector-icons/FontAwesome";
@@ -22,9 +23,11 @@ import {
 } from "../../components";
 import { Props } from "./types";
 import {
-  createNeedItNotes,
-  createGotitNotes,
+  createMultipleNeedItNotes,
+  createMultipleGotitNotes,
   addItemToAsyncStorage,
+  createGotitNotes,
+  createNeedItNotes,
 } from "../../services/index";
 import {
   ScrollView,
@@ -33,6 +36,7 @@ import {
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-community/async-storage";
 import { heightToDp, widthToDp } from "../../utils";
+import Toast from "react-native-simple-toast";
 
 const { width, height, scale, fontScale } = Dimensions.get("window");
 
@@ -44,12 +48,11 @@ const AddItemScreen = ({ navigation, route }: Props) => {
   const [isTextFieldShown, setTextFieldShown] = useState(false);
   const [placeholder, setPlaceHolder] = useState("New item....");
   const [isLoading, setIsLoading] = useState(false);
+  const [notes, setNotes] = useState([{ note: "" }]);
 
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, []);
-
-  //mn4soft
 
   const addItem = async (note: string) => {
     try {
@@ -85,11 +88,11 @@ const AddItemScreen = ({ navigation, route }: Props) => {
         }
       } else {
         if (note) {
-          setIsLoading(true);
           const authData = await AsyncStorage.getItem("token");
           const { token, id } = JSON.parse(authData as string);
           if (note.length >= 4) {
             if (screenName === "Need It") {
+              setIsLoading(true);
               const createdItem = await createNeedItNotes({
                 note,
                 userID: id,
@@ -99,9 +102,8 @@ const AddItemScreen = ({ navigation, route }: Props) => {
               setPlaceHolder("");
               setTextFieldShown(false);
               setIsLoading(false);
-            }
-          } else {
-            if (note.length >= 4) {
+            } else {
+              setIsLoading(true);
               const createdItem = await createGotitNotes({
                 note,
                 userID: id,
@@ -239,7 +241,8 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                             </Pressable>
                             <Pressable
                               android_ripple={{ color: theme.colors.primary }}
-                              onPress={() => {
+                              onPress={async () => {
+                                Toast.show("Saved", Toast.SHORT);
                                 navigation.goBack();
                               }}
                               style={{

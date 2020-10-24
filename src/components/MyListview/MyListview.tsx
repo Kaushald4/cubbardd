@@ -38,14 +38,24 @@ interface Props {
     prevNote: string | undefined,
     id: string | undefined
   ) => Promise<void>;
-  moveToGotItList?: (id: Array<any>, isTapped: boolean) => Promise<void>;
-  moveToNeedItList?: (id: Array<any>, isTapped: boolean) => Promise<void>;
+  moveToGotItList?: (
+    id: Array<any>,
+    low: boolean,
+    isTapped: boolean
+  ) => Promise<void>;
+  moveToNeedItList?: (
+    id: Array<any>,
+    low: boolean,
+    isTapped: boolean
+  ) => Promise<void>;
   markNoteAsLow: () => Promise<void>;
   islowSelect: boolean;
   screenName: "NeedIt" | "GotIt";
   setMenuItemVisibel: (b: boolean) => void;
   clearPrevDataOnSwipe: (id: string) => void;
   setLowSelect: (b: boolean) => void;
+  setIsLow: (b: boolean) => void;
+  isLow: boolean;
 }
 
 export default function MyListView({
@@ -63,6 +73,8 @@ export default function MyListView({
   setMenuItemVisibel,
   clearPrevDataOnSwipe,
   setLowSelect,
+  setIsLow,
+  isLow,
 }: Props) {
   const theme = useTheme();
   const [listData, setListData] = useState(data);
@@ -133,22 +145,15 @@ export default function MyListView({
     const opacity = selectedItems.length >= 1 && !data.item.selected ? 0.5 : 1;
     let backgroundColor;
     if (
-      islowSelect &&
-      selectedItems.length > 0 &&
-      data.item.selected &&
+      // islowSelect &&
+      // selectedItems.length > 0 &&
+      // data.item.selected &&
       data.item.low
     ) {
       backgroundColor = "rgb(204,235,255)";
     } else {
       backgroundColor = "#FFFFFF";
     }
-
-    console.log(
-      islowSelect,
-      selectedItems.length > 0,
-      data.item.selected,
-      data.item.low
-    );
 
     return (
       <Pressable
@@ -190,31 +195,32 @@ export default function MyListView({
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {data.item.low ? (
-              <Pressable
-                onPress={async () =>
-                  await moveToGotItList([data.item._id], true)
-                }
-              >
-                <Text
-                  style={{
-                    marginRight: 10,
-                    // backgroundColor: theme.colors.primary,
-                    paddingHorizontal: 8,
-                    color: "#FFFFFF",
-                    textAlign: "center",
-                    display:
-                      data.item.selected && selectedItems.length <= 1
-                        ? "flex"
-                        : "none",
-                  }}
-                >
-                  <FontAwesome
-                    name="share"
-                    size={25}
-                    color={theme.colors.primary}
-                  />
-                </Text>
-              </Pressable>
+              // <Pressable
+              //   onPress={async () =>
+              //     await moveToGotItList([data.item._id], true)
+              //   }
+              // >
+              //   <Text
+              //     style={{
+              //       marginRight: 10,
+              //       // backgroundColor: theme.colors.primary,
+              //       paddingHorizontal: 8,
+              //       color: "#FFFFFF",
+              //       textAlign: "center",
+              //       display:
+              //         data.item.selected && selectedItems.length <= 1
+              //           ? "flex"
+              //           : "none",
+              //     }}
+              //   >
+              //     <FontAwesome
+              //       name="share"
+              //       size={25}
+              //       color={theme.colors.primary}
+              //     />
+              //   </Text>
+              // </Pressable>
+              <View />
             ) : (
               <Pressable
                 onPress={async () => {
@@ -261,20 +267,21 @@ export default function MyListView({
   };
 
   const onSwipeEnd = async (id: string, Swipedata: SwipeGestureEndedData) => {
+    const swipedItem = listData.filter((el) => el._id === id);
     if (Swipedata.translateX >= width * 0.2) {
       if (screenName === "NeedIt") {
-        await moveToGotItList([id], false);
+        await moveToGotItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
       } else if (screenName === "GotIt") {
-        await moveToNeedItList([id], false);
+        await moveToNeedItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
       }
     } else if (Swipedata.translateX <= -width * 0.2) {
       if (screenName === "NeedIt") {
-        await moveToGotItList([id], false);
+        await moveToGotItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
       } else if (screenName === "GotIt") {
-        await moveToNeedItList([id], false);
+        await moveToNeedItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
       }
     }

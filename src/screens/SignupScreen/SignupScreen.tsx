@@ -18,6 +18,7 @@ import { Formik, Field } from "formik";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import Toast from "react-native-simple-toast";
 
 import bglayer from "../../assets/bglayer.svg";
 import {
@@ -70,6 +71,7 @@ const SignupScreen = ({ navigation }: Props) => {
     } else if (user.cancel) {
       setFbLoading(false);
     } else if (user.token) {
+      Toast.show("Account created successfully", Toast.SHORT);
       navigation.replace("Home");
       console.log(user);
     }
@@ -137,12 +139,12 @@ const SignupScreen = ({ navigation }: Props) => {
                     } else {
                       actions.setSubmitting(false);
                       setFormSubmitting(false);
+                      Toast.show("Account created successfully.", Toast.SHORT);
                       navigation.replace("LoginScreen");
                     }
                   } catch (error) {
                     console.log("error occured at signup process ", error);
                   }
-                  console.log("submited");
                 }}
               >
                 {({

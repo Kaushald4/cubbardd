@@ -12,6 +12,9 @@ export {
   markGotItNotesLow,
   updateGotItNotes,
   moveToNeedIt,
+  createMultipleGotitNotes,
+  copyNotesToNeedIt,
+  markGotItNotesNotLow,
 } from "./Gotit/gotit";
 export {
   createNeedItNotes,
@@ -20,6 +23,9 @@ export {
   getAllNeedItNotes,
   updateNeedItNotes,
   moveToGotIt,
+  createMultipleNeedItNotes,
+  copyNotesToGotIt,
+  markNeedItNotesNotLow,
 } from "./NeedIt/needit";
 
 export { signout } from "./Auth/signout";

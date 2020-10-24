@@ -26,6 +26,69 @@ export const createGotitNotes = async ({ note, userID, token }: Props) => {
     }
   });
 };
+export const createMultipleGotitNotes = async ({
+  notes,
+  userID,
+  token,
+}: {
+  notes: Array<any>;
+  userID: string;
+  token: string;
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        `${BASE_URI}/gotIt/create_notes/create/${userID}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notes }),
+        }
+      );
+      const data = await response.json();
+      resolve(data);
+    } catch (error) {
+      console.log("error in creating gotit note ", error);
+      reject({ error: error.message });
+    }
+  });
+};
+//remove it
+export const copyNotesToNeedIt = async ({
+  notesID,
+  notes,
+  userID,
+  token,
+}: {
+  notesID: Array<string>;
+  userID: string;
+  token: string;
+  notes: Array<any>;
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        `${BASE_URI}/gotIt/copy_to_needIt/${userID}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notesID, notes }),
+        }
+      );
+      const data = await response.json();
+      resolve(data);
+    } catch (error) {
+      console.log("error copying to needIt note ", error);
+      reject({ error: error.message });
+    }
+  });
+};
 export const getAllGotItNotes = async ({
   userID,
   token,
@@ -129,6 +192,37 @@ export const markGotItNotesLow = async ({
       resolve(data);
     } catch (error) {
       console.log("error in marking gotit user notes as low", error);
+      reject({ error: error.message });
+    }
+  });
+};
+
+export const markGotItNotesNotLow = async ({
+  userID,
+  notesID,
+  token,
+}: {
+  userID: string;
+  notesID: Array<string>;
+  token: string;
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        `${BASE_URI}/gotit/notes/mark_not_low/${userID}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notesID }),
+        }
+      );
+      const data = await response.json();
+      resolve(data);
+    } catch (error) {
+      console.log("error in marking needit user notes as low", error);
       reject({ error: error.message });
     }
   });
