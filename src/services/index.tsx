@@ -15,6 +15,7 @@ export {
   createMultipleGotitNotes,
   copyNotesToNeedIt,
   markGotItNotesNotLow,
+  handleLowGotItNote,
 } from "./Gotit/gotit";
 export {
   createNeedItNotes,
@@ -26,6 +27,7 @@ export {
   createMultipleNeedItNotes,
   copyNotesToGotIt,
   markNeedItNotesNotLow,
+  handleLowNeedItNote,
 } from "./NeedIt/needit";
 
 export { signout } from "./Auth/signout";

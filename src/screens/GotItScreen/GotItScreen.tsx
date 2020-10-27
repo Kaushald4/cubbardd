@@ -33,6 +33,7 @@ import {
   moveToNeedIt,
   updateGotItNotes,
   markGotItNotesNotLow,
+  handleLowGotItNote,
 } from "../../services";
 import AsyncStorage from "@react-native-community/async-storage";
 import { heightToDp, widthToDp } from "../../utils";
@@ -317,6 +318,9 @@ const GotItScreen = ({ navigation }: Props) => {
             const filteredGotItList = userNotes.gotIt.filter(
               (el: any) => el._id !== notesID[0]
             );
+            const filteredNeedIttList = userNotes.needIt.filter(
+              (el: any) => el._id !== notesID[0]
+            );
             filteredList.low = false;
             if (!low) {
               setIsLoading(true);
@@ -361,8 +365,8 @@ const GotItScreen = ({ navigation }: Props) => {
               setIsLoading(true);
               filteredList[0].low = false;
               const newData = {
-                needIt: [...userNotes.needIt],
-                gotIt: [...filteredGotItList, ...filteredList],
+                needIt: [...filteredNeedIttList, ...filteredList],
+                gotIt: [...filteredGotItList],
               };
               if (userNotes.needIt.length > 1) {
                 Alert.alert(
@@ -398,6 +402,10 @@ const GotItScreen = ({ navigation }: Props) => {
                 setSelectedItems([]);
                 setIsLoading(false);
                 getAllNotes();
+                SimpleToast.show(
+                  "Moved to the Need it  list",
+                  SimpleToast.SHORT
+                );
               }
             }
           } else {
@@ -457,9 +465,19 @@ const GotItScreen = ({ navigation }: Props) => {
             if (userAuthData) {
               const { token, id } = JSON.parse(userAuthData);
               if (low) {
-                await markGotItNotesNotLow({ notesID, token, userID: id });
+                // await markGotItNotesNotLow({ notesID, token, userID: id });
+                await handleLowGotItNote({
+                  noteId: notesID[0],
+                  token,
+                  userId: id,
+                });
+                //TODO: set some toast messages
                 setSelectedItems([]);
                 getAllNotes();
+                SimpleToast.show(
+                  "Moved to the Need it  list",
+                  SimpleToast.SHORT
+                );
               } else {
                 let newNotesId = [];
                 if (selectedItems.length <= 1) {
@@ -663,7 +681,7 @@ const GotItScreen = ({ navigation }: Props) => {
       />
       <ImageBackground
         style={styles.backgroundOverlay}
-        source={require("../../assets/bg.png")}
+        source={require("../../assets/homebg.png")}
       >
         <View style={styles.wrapper}>
           <View style={styles.needItContainer}>

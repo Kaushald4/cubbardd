@@ -69,8 +69,10 @@ const AddItemScreen = ({ navigation, route }: Props) => {
             });
             const userNotesData = await AsyncStorage.getItem("userNotes");
             const userNotes = await JSON.parse(userNotesData as string);
-
             setItems(userNotes.needIt);
+            setPlaceHolder("");
+            setTextFieldShown(false);
+            setIsLoading(false);
           }
         } else {
           if (note.length >= 4) {
@@ -81,9 +83,10 @@ const AddItemScreen = ({ navigation, route }: Props) => {
             });
             const userNotesData = await AsyncStorage.getItem("userNotes");
             const userNotes = await JSON.parse(userNotesData as string);
-            console.log(userNotes);
-
             setItems(userNotes.gotIt);
+            setPlaceHolder("");
+            setTextFieldShown(false);
+            setIsLoading(false);
           }
         }
       } else {
@@ -138,7 +141,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
         >
           <ImageBackground
             style={styles.backgroundOverlay}
-            source={require("../../assets/bg.png")}
+            source={require("../../assets/homebg.png")}
           >
             <View style={styles.wrapper}>
               <View style={{ paddingHorizontal: 40 }}>

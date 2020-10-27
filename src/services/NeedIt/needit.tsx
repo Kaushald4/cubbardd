@@ -237,6 +237,37 @@ export const markNeedItNotesNotLow = async ({
   });
 };
 
+export const handleLowNeedItNote = async ({
+  userId,
+  token,
+  noteId,
+}: {
+  userId: string;
+  noteId: string;
+  token: string;
+}) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(
+        `${BASE_URI}/needIt/notes/handle_low_note/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ noteId }),
+        }
+      );
+      const data = await response.json();
+      resolve(data);
+    } catch (error) {
+      console.log("error in marking gotit user notes as low", error);
+      reject({ error: error.message });
+    }
+  });
+};
+
 export const moveToGotIt = async ({
   userID,
   notesID,

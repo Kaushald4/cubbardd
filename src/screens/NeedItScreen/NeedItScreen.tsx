@@ -34,6 +34,7 @@ import {
   moveToGotIt,
   updateNeedItNotes,
   markNeedItNotesNotLow,
+  handleLowNeedItNote,
 } from "../../services/NeedIt/needit";
 import { heightToDp, widthToDp } from "../../utils/dimensions";
 import SimpleToast from "react-native-simple-toast";
@@ -315,6 +316,9 @@ const NeedItScreen = ({ navigation }: Props) => {
             const filteredNeedItList = userNotes.needIt.filter(
               (el: any) => el._id !== notesID[0]
             );
+            const filteredGotItList = userNotes.gotIt.filter(
+              (el: any) => el._id !== notesID[0]
+            );
             filteredList[0].low = false;
             if (!low) {
               const newData = {
@@ -357,8 +361,8 @@ const NeedItScreen = ({ navigation }: Props) => {
             } else {
               filteredList[0].low = false;
               const newData = {
-                needIt: [...filteredNeedItList, ...filteredList],
-                gotIt: [...userNotes.gotIt],
+                needIt: [...filteredNeedItList],
+                gotIt: [...filteredGotItList, ...filteredList],
               };
 
               if (userNotes.gotIt.length > 1) {
@@ -393,6 +397,10 @@ const NeedItScreen = ({ navigation }: Props) => {
                 setSelectedItems([]);
                 setIsLoading(false);
                 getAllNotes();
+                SimpleToast.show(
+                  "Moved to the Got it  list",
+                  SimpleToast.SHORT
+                );
               }
             }
           } else {
@@ -443,10 +451,16 @@ const NeedItScreen = ({ navigation }: Props) => {
           if (userAuthData) {
             const { token, id } = JSON.parse(userAuthData);
             if (low) {
-              await markNeedItNotesNotLow({ notesID, token, userID: id });
+              // await markNeedItNotesNotLow({ notesID, token, userID: id });
+              await handleLowNeedItNote({
+                noteId: notesID[0],
+                token,
+                userId: id,
+              });
 
               setSelectedItems([]);
               getAllNotes();
+              SimpleToast.show("Moved to the Got it  list", SimpleToast.SHORT);
             } else {
               let newNotesId = [];
               if (selectedItems.length <= 1) {
@@ -650,7 +664,7 @@ const NeedItScreen = ({ navigation }: Props) => {
       />
       <ImageBackground
         style={styles.backgroundOverlay}
-        source={require("../../assets/bg.png")}
+        source={require("../../assets/homebg.png")}
       >
         <View style={styles.wrapper}>
           <View style={styles.needItContainer}>
