@@ -11,6 +11,7 @@ import {
   Alert,
   Keyboard,
   StatusBar,
+  Image,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
@@ -52,6 +53,7 @@ const NeedItScreen = ({ navigation }: Props) => {
   const [isLow, setIslow] = useState(false);
   const [isMenuItemShown, setIsMenuItemShown] = useState(false);
   const [showBtn, seBtnShow] = useState(false);
+  const [AllselectedItemLow, setSelectedItemLow] = useState(false);
 
   //TODO: remove navigation lisetner when component will unmount
   useEffect(() => {
@@ -453,7 +455,7 @@ const NeedItScreen = ({ navigation }: Props) => {
             if (low) {
               // await markNeedItNotesNotLow({ notesID, token, userID: id });
               await handleLowNeedItNote({
-                noteId: notesID[0],
+                noteId: notesID,
                 token,
                 userId: id,
               });
@@ -529,24 +531,44 @@ const NeedItScreen = ({ navigation }: Props) => {
                   // } else {
                   //   console.log("Sign in to continue....");
                   // }
-                  const authData = await AsyncStorage.getItem("token");
-                  const { token, id } = JSON.parse(authData as string);
-                  const data = await deleteNeedItNotes({
-                    userID: id,
-                    notesId,
-                    token,
-                  });
-                  if (data.success) {
-                    getAllNotes();
-                    setSelectedItems([]);
-                    setIsLoading(false);
-                    navigation.navigate("GotItScreen");
-                    SimpleToast.show(
-                      "Moved to the got it list",
-                      SimpleToast.SHORT
-                    );
+                  const userAuthData = await AsyncStorage.getItem("token");
+                  if (userAuthData) {
+                    const { token, id } = JSON.parse(userAuthData);
+                    if (low) {
+                      // await markNeedItNotesNotLow({ notesID, token, userID: id });
+                      await handleLowNeedItNote({
+                        noteId: notesId,
+                        token,
+                        userId: id,
+                      });
+
+                      setSelectedItems([]);
+                      getAllNotes();
+                      SimpleToast.show(
+                        "Moved to the Got it  list",
+                        SimpleToast.SHORT
+                      );
+                      navigation.navigate("GotItScreen");
+                    } else {
+                      let newNotesId = [];
+                      if (selectedItems.length <= 1) {
+                        newNotesId.push(...(notesID as Array<string>));
+                      } else {
+                        const ids = selectedItems.map((el) => el["_id"]);
+                        newNotesId.push(...ids);
+                      }
+                      await moveToGotIt({
+                        userID: id,
+                        token,
+                        notesID: newNotesId,
+                      });
+                      setIsLoading(false);
+                      SimpleToast.show(
+                        "Moved to the Got it  list",
+                        SimpleToast.SHORT
+                      );
+                    }
                   }
-                  setIsLoading(false);
                 },
               },
             ],
@@ -637,53 +659,6 @@ const NeedItScreen = ({ navigation }: Props) => {
         } else {
           setIsLoading(false);
           console.log("sign in to continue.....");
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const markNoteNotLow = async (notesID: Array<string>) => {
-    try {
-      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
-      if (isSkippedData && JSON.stringify(isSkippedData)) {
-        // const userNotesData = await AsyncStorage.getItem("userNotes");
-        // if (userNotesData) {
-        //   const userNotes = JSON.parse(userNotesData);
-        //   const filteredList = userNotes.needIt.filter(
-        //     (el: any) => el._id === id[0]
-        //   );
-        //   const filteredNeedItList = userNotes.needIt.filter(
-        //     (el: any) => el._id !== id[0]
-        //   );
-        //   filteredList[0].low = false;
-        //   const newNote = {
-        //     needIt: [...filteredList, ...filteredNeedItList],
-        //     gotIt: [...userNotes.needIt],
-        //   };
-        //   await AsyncStorage.setItem("userNotes", JSON.stringify(newNote));
-        //   setIsLowSelect(false);
-        //   setIslow(false);
-        //   setSelectedItems([]);
-        //   setIsLoading(false);
-        //   getAllNotes();
-        // }
-      } else {
-        const userAuthData = await AsyncStorage.getItem("token");
-        if (userAuthData) {
-          setIsLoading(true);
-          const { token, id } = JSON.parse(userAuthData);
-          await markNeedItNotesNotLow({
-            notesID: [notesID],
-            token,
-            userID: id,
-          });
-          setIslow(false);
-          setIsLowSelect(false);
-          setSelectedItems([]);
-          setIsLoading(false);
-          getAllNotes();
         }
       }
     } catch (error) {
@@ -787,37 +762,34 @@ const NeedItScreen = ({ navigation }: Props) => {
                           android_ripple={{ color: "#FFFFFF" }}
                           style={{
                             marginRight: 10,
-                            backgroundColor: "#000000",
                             borderRadius: 4,
                             overflow: "hidden",
                             paddingHorizontal: 8,
                           }}
                         >
-                          <Text
-                            style={{ textAlign: "center", color: "#FFFFFF" }}
-                          >
-                            Low
-                          </Text>
+                          <Image source={require("../../assets/low.png")} />
                         </Pressable>
                       ) : (
-                        // <Pressable
-                        //   onPress={() => markNoteAsLow()}
-                        //   android_ripple={{ color: "#FFFFFF" }}
-                        //   style={{
-                        //     marginRight: 10,
-                        //     backgroundColor: "#000000",
-                        //     borderRadius: 4,
-                        //     overflow: "hidden",
-                        //     paddingHorizontal: 8,
-                        //   }}
-                        // >
-                        //   <Text
-                        //     style={{ textAlign: "center", color: "#FFFFFF" }}
-                        //   >
-                        //     Low
-                        //   </Text>
-                        // </Pressable>
-                        <View />
+                        <>
+                          {AllselectedItemLow ? (
+                            <Pressable
+                              onPress={() => moveToGotItList([], true, true)}
+                              android_ripple={{ color: "#FFFFFF" }}
+                              style={{
+                                marginRight: 10,
+                                borderRadius: 4,
+                                overflow: "hidden",
+                                paddingHorizontal: 8,
+                              }}
+                            >
+                              <Image
+                                source={require("../../assets/notlow.png")}
+                              />
+                            </Pressable>
+                          ) : (
+                            <View />
+                          )}
+                        </>
                       )}
                       <Pressable onPress={() => deleteItem()}>
                         <MaterailIcons name="delete" size={20} />
@@ -831,7 +803,7 @@ const NeedItScreen = ({ navigation }: Props) => {
                     }}
                     onPress={() => navigation.navigate("GotItScreen")}
                   >
-                    <FontAwesome name="share" color="#FFFFFF" size={18} />
+                    <FontAwesome name="share" color="#000000" size={18} />
                   </TouchableOpacity>
                 </View>
               )}
@@ -907,13 +879,14 @@ const NeedItScreen = ({ navigation }: Props) => {
                   moveToGotItList={moveToGotItList}
                   markNoteAsLow={markNoteAsLow}
                   islowSelect={isLowSelect}
+                  setSelectedItemLow={setSelectedItemLow}
+                  getAllNotes={getAllNotes}
                   setLowSelect={setIsLowSelect}
                   setIsLow={setIslow}
                   screenName="NeedIt"
                   setMenuItemVisibel={setIsMenuItemShown}
                   clearPrevDataOnSwipe={clearPrevDataOnSwipe}
                   isLow={isLow}
-                  markNoteNotLow={markNoteNotLow}
                 />
               </View>
             ) : (

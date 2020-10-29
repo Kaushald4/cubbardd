@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-community/async-storage";
+import { Platform } from "react-native";
 import { LoginManager, AccessToken } from "react-native-fbsdk";
 import { saveAsyncItemToDB } from "./skipAuth";
 import { BASE_URI } from "./uri";
@@ -13,6 +14,10 @@ interface User {
 export async function logInWithFacebook() {
   return new Promise<User>(async (resolve, reject) => {
     try {
+      // if (Platform.OS === "android") {
+      //   LoginManager.setLoginBehavior("web_only");
+      // }
+
       const res = await LoginManager.logInWithPermissions([
         "public_profile",
       ]).then(
@@ -88,6 +93,9 @@ export async function logInWithFacebook() {
 export async function signupWithFacebook() {
   return new Promise<User>(async (resolve, reject) => {
     try {
+      // if (Platform.OS === "android") {
+      //   LoginManager.setLoginBehavior("web_only");
+      // }
       const res = await LoginManager.logInWithPermissions([
         "public_profile",
       ]).then(

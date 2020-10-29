@@ -51,8 +51,9 @@ interface Props {
     low: boolean,
     isTapped: boolean
   ) => Promise<void>;
-  markNoteNotLow: (id: Array<string>) => void;
+  setSelectedItemLow: (b: boolean) => void;
   markNoteAsLow: () => Promise<void>;
+  getAllNotes: () => void;
   islowSelect: boolean;
   screenName: "NeedIt" | "GotIt";
   setMenuItemVisibel: (b: boolean) => void;
@@ -78,8 +79,9 @@ export default function MyListView({
   clearPrevDataOnSwipe,
   setLowSelect,
   setIsLow,
-  markNoteNotLow,
   isLow,
+  getAllNotes,
+  setSelectedItemLow,
 }: Props) {
   const theme = useTheme();
   const [listData, setListData] = useState(data);
@@ -144,6 +146,8 @@ export default function MyListView({
 
     const selectedData = listData.filter((d) => d.selected);
     setSelectedItems(selectedData);
+    const isAllSelectedItemsLow = selectedData.every((el) => el.low);
+    setSelectedItemLow(isAllSelectedItemsLow);
   };
 
   const renderItem = (data: any, rowMap: any) => {
@@ -196,13 +200,26 @@ export default function MyListView({
                 }}
               />
             )}
-            <Text> {data.item.note.slice(0, 30)} </Text>
+            <Text style={{ color: theme.colors.accent }}>
+              {" "}
+              {data.item.note.slice(0, 30)}{" "}
+            </Text>
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {data.item.low ? (
               <Pressable
                 onPress={async () => {
-                  markNoteNotLow([data.item._id]);
+                  const id = data.item._id;
+                  const swipedItem = listData.filter((el) => el._id === id);
+                  if (screenName === "NeedIt") {
+                    await moveToGotItList([id], swipedItem[0].low, false);
+                    clearPrevDataOnSwipe(id);
+                    getAllNotes();
+                  } else if (screenName === "GotIt") {
+                    await moveToNeedItList([id], swipedItem[0].low, false);
+                    clearPrevDataOnSwipe(id);
+                    getAllNotes();
+                  }
                 }}
               >
                 <Image
@@ -277,17 +294,21 @@ export default function MyListView({
       if (screenName === "NeedIt") {
         await moveToGotItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
+        getAllNotes();
       } else if (screenName === "GotIt") {
         await moveToNeedItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
+        getAllNotes();
       }
     } else if (Swipedata.translateX <= -width * 0.2) {
       if (screenName === "NeedIt") {
         await moveToGotItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
+        getAllNotes();
       } else if (screenName === "GotIt") {
         await moveToNeedItList([id], swipedItem[0].low, false);
         clearPrevDataOnSwipe(id);
+        getAllNotes();
       }
     }
   };

@@ -1,6 +1,13 @@
 import "react-native-gesture-handler";
 import React, { useEffect } from "react";
-import { Platform, StatusBar, StyleSheet, Text, View } from "react-native";
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  LogBox,
+} from "react-native";
 import { MenuProvider } from "react-native-popup-menu";
 import { DefaultTheme as NavigationTheme } from "@react-navigation/native";
 import {
@@ -11,6 +18,7 @@ import deepMerge from "deepmerge";
 
 import Main from "./src/Main";
 import LoadAssets from "./src/LoadAssets";
+import { LoginManager } from "react-native-fbsdk";
 
 const myNavigationTheme = {
   ...NavigationTheme,
@@ -33,11 +41,10 @@ const myPaperTheme = {
 };
 
 const combinedTheme = deepMerge(myNavigationTheme, myPaperTheme);
-
 const App = () => {
   return (
     <PaperProvider theme={combinedTheme}>
-      <StatusBar translucent />
+      <StatusBar translucent hidden />
       <LoadAssets>
         <MenuProvider>
           <Main theme={combinedTheme} />
