@@ -10,6 +10,7 @@ import {
   Platform,
   Pressable,
   UIManager,
+  Image,
 } from "react-native";
 import { Constants } from "react-native-unimodules";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
@@ -19,6 +20,8 @@ import {
   SwipeListView,
 } from "react-native-swipe-list-view";
 import { useTheme } from "react-native-paper";
+import { markNeedItNotesNotLow } from "../../services";
+import AsyncStorage from "@react-native-community/async-storage";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
@@ -48,6 +51,7 @@ interface Props {
     low: boolean,
     isTapped: boolean
   ) => Promise<void>;
+  markNoteNotLow: (id: Array<string>) => void;
   markNoteAsLow: () => Promise<void>;
   islowSelect: boolean;
   screenName: "NeedIt" | "GotIt";
@@ -74,6 +78,7 @@ export default function MyListView({
   clearPrevDataOnSwipe,
   setLowSelect,
   setIsLow,
+  markNoteNotLow,
   isLow,
 }: Props) {
   const theme = useTheme();
@@ -195,32 +200,22 @@ export default function MyListView({
           </View>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             {data.item.low ? (
-              // <Pressable
-              //   onPress={async () =>
-              //     await moveToGotItList([data.item._id], true)
-              //   }
-              // >
-              //   <Text
-              //     style={{
-              //       marginRight: 10,
-              //       // backgroundColor: theme.colors.primary,
-              //       paddingHorizontal: 8,
-              //       color: "#FFFFFF",
-              //       textAlign: "center",
-              //       display:
-              //         data.item.selected && selectedItems.length <= 1
-              //           ? "flex"
-              //           : "none",
-              //     }}
-              //   >
-              //     <FontAwesome
-              //       name="share"
-              //       size={25}
-              //       color={theme.colors.primary}
-              //     />
-              //   </Text>
-              // </Pressable>
-              <View />
+              <Pressable
+                onPress={async () => {
+                  markNoteNotLow([data.item._id]);
+                }}
+              >
+                <Image
+                  style={{
+                    marginRight: 20,
+                    display:
+                      data.item.selected && selectedItems.length <= 1
+                        ? "flex"
+                        : "none",
+                  }}
+                  source={require("../../assets/notlow.png")}
+                />
+              </Pressable>
             ) : (
               <Pressable
                 onPress={async () => {
@@ -228,7 +223,7 @@ export default function MyListView({
                   await markNoteAsLow();
                 }}
               >
-                <Text
+                {/* <Text
                   style={{
                     marginRight: 10,
                     backgroundColor: theme.colors.primary,
@@ -242,7 +237,17 @@ export default function MyListView({
                   }}
                 >
                   Low
-                </Text>
+                </Text> */}
+                <Image
+                  style={{
+                    marginRight: 20,
+                    display:
+                      data.item.selected && selectedItems.length <= 1
+                        ? "flex"
+                        : "none",
+                  }}
+                  source={require("../../assets/low.png")}
+                />
               </Pressable>
             )}
             <Pressable

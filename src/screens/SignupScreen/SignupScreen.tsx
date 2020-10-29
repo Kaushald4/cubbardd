@@ -354,7 +354,7 @@ const SignupScreen = ({ navigation }: Props) => {
                           disabled={isSubmitting}
                         />
                         <MyText
-                          text="OR..."
+                          text="Or..."
                           color={theme.colors.placeholder}
                           size={14}
                           pt={18}

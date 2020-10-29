@@ -142,6 +142,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
           <ImageBackground
             style={styles.backgroundOverlay}
             source={require("../../assets/homebg.png")}
+            resizeMode="stretch"
           >
             <View style={styles.wrapper}>
               <View style={{ paddingHorizontal: 40 }}>

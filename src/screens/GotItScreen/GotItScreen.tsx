@@ -612,13 +612,17 @@ const GotItScreen = ({ navigation }: Props) => {
             userNotes.gotIt.forEach((e: any) => (e.low = true));
             setIsLowSelect(true);
             const newData = {
-              needIt: userNotes.needIt,
-              gotIt: [],
+              needIt: [...userNotes.gotIt],
+              gotIt: [...userNotes.gotIt],
             };
             await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
             selectedItems.forEach((e) => (e.low = true));
             selectedItems.length <= 1 ? setIslow(false) : setIslow(true);
+            setIslow(false);
+            setIsLowSelect(false);
+            setSelectedItems([]);
             setIsLoading(false);
+            SimpleToast.show("Marked as low", SimpleToast.SHORT);
           }
         }
       } else {
@@ -657,6 +661,53 @@ const GotItScreen = ({ navigation }: Props) => {
     }
   };
 
+  const markNoteNotLow = async (notesID: Array<string>) => {
+    try {
+      const isSkippedData = await AsyncStorage.getItem("skippedAuth");
+      if (isSkippedData && JSON.stringify(isSkippedData)) {
+        // const userNotesData = await AsyncStorage.getItem("userNotes");
+        // if (userNotesData) {
+        //   const userNotes = JSON.parse(userNotesData);
+        //   const filteredList = userNotes.needIt.filter(
+        //     (el: any) => el._id === id[0]
+        //   );
+        //   const filteredNeedItList = userNotes.needIt.filter(
+        //     (el: any) => el._id !== id[0]
+        //   );
+        //   filteredList[0].low = false;
+        //   const newNote = {
+        //     needIt: [...filteredList, ...filteredNeedItList],
+        //     gotIt: [...userNotes.needIt],
+        //   };
+        //   await AsyncStorage.setItem("userNotes", JSON.stringify(newNote));
+        //   setIsLowSelect(false);
+        //   setIslow(false);
+        //   setSelectedItems([]);
+        //   setIsLoading(false);
+        //   getAllNotes();
+        // }
+      } else {
+        const userAuthData = await AsyncStorage.getItem("token");
+        if (userAuthData) {
+          setIsLoading(true);
+          const { token, id } = JSON.parse(userAuthData);
+          await markGotItNotesNotLow({
+            notesID: [notesID],
+            token,
+            userID: id,
+          });
+          setIslow(false);
+          setIsLowSelect(false);
+          setSelectedItems([]);
+          setIsLoading(false);
+          getAllNotes();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   if (!items) {
     return (
       <View style={{ backgroundColor: theme.colors.primary, flex: 1 }}>
@@ -682,6 +733,7 @@ const GotItScreen = ({ navigation }: Props) => {
       <ImageBackground
         style={styles.backgroundOverlay}
         source={require("../../assets/homebg.png")}
+        resizeMode="stretch"
       >
         <View style={styles.wrapper}>
           <View style={styles.needItContainer}>
@@ -868,6 +920,7 @@ const GotItScreen = ({ navigation }: Props) => {
                   setSelectedItems={setSelectedItems}
                   markNoteAsLow={markNoteAsLow}
                   moveToNeedItList={moveToNeedItList}
+                  markNoteNotLow={markNoteNotLow}
                   islowSelect={isLowSelect}
                   setLowSelect={setIsLowSelect}
                   moveToGotItList={moveToNeedItList}
