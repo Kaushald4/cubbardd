@@ -61,7 +61,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
       if (isSkippedData && JSON.parse(isSkippedData)) {
         if (screenName === "Need It") {
           // await AsyncStorage.removeItem("userNotes");
-          if (note.length >= 4) {
+          if (note.length >= 2) {
             await addItemToAsyncStorage({
               needIt: newItem,
               action: "needIt",
@@ -75,7 +75,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
             setIsLoading(false);
           }
         } else {
-          if (note.length >= 4) {
+          if (note.length >= 2) {
             await addItemToAsyncStorage({
               gotIt: newItem,
               action: "gotIt",
@@ -93,7 +93,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
         if (note) {
           const authData = await AsyncStorage.getItem("token");
           const { token, id } = JSON.parse(authData as string);
-          if (note.length >= 4) {
+          if (note.length >= 2) {
             if (screenName === "Need It") {
               setIsLoading(true);
               const createdItem = await createNeedItNotes({
@@ -207,7 +207,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                               <Fontawesome
                                 name="check-circle"
                                 color={
-                                  newItem.length >= 4
+                                  newItem.length >= 2
                                     ? theme.colors.primary
                                     : theme.colors.disabled
                                 }

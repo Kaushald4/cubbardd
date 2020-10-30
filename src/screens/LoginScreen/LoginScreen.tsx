@@ -247,13 +247,19 @@ const LoginScreen = ({ navigation }: Props) => {
                             maxWidth: width * 0.9,
                           }}
                         />
-                        <MyText
-                          text="Forgotten your password?"
-                          color={theme.colors.placeholder}
-                          pt={4}
-                          ff="Ubuntu-Light"
-                          size={12}
-                        />
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate("ForgotpassScreen")
+                          }
+                        >
+                          <MyText
+                            text="Forgotten your password?"
+                            color={theme.colors.placeholder}
+                            pt={4}
+                            ff="Ubuntu-Light"
+                            size={12}
+                          />
+                        </Pressable>
                         <View
                           style={{
                             position: "absolute",

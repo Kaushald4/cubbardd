@@ -4,13 +4,19 @@ import {
   createStackNavigator,
   TransitionSpecs,
 } from "@react-navigation/stack";
-import { LoginScreen, SignupScreen, SplashScreen } from "../screens";
+import {
+  ForgotpassScreen,
+  LoginScreen,
+  SignupScreen,
+  SplashScreen,
+} from "../screens";
 import AppStackNavigator from "./AppStackNavigator";
 
 export type AuthStackParamList = {
   LoginScreen: undefined;
   SignUpScreen: undefined;
   SplashScreen: undefined;
+  ForgotpassScreen: undefined;
   Home: undefined;
 };
 
@@ -31,6 +37,7 @@ const AuthStackNavigator = () => {
       <AuthStack.Screen name="SplashScreen" component={SplashScreen} />
       <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
       <AuthStack.Screen name="SignUpScreen" component={SignupScreen} />
+      <AuthStack.Screen name="ForgotpassScreen" component={ForgotpassScreen} />
       <AuthStack.Screen name="Home" component={AppStackNavigator} />
     </AuthStack.Navigator>
   );

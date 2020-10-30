@@ -44,7 +44,7 @@ const combinedTheme = deepMerge(myNavigationTheme, myPaperTheme);
 const App = () => {
   return (
     <PaperProvider theme={combinedTheme}>
-      <StatusBar translucent hidden />
+      <StatusBar translucent backgroundColor="#FFFFFF" />
       <LoadAssets>
         <MenuProvider>
           <Main theme={combinedTheme} />

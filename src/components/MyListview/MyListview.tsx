@@ -200,7 +200,7 @@ export default function MyListView({
                 }}
               />
             )}
-            <Text style={{ color: theme.colors.accent }}>
+            <Text style={{ color: theme.colors.accent, fontWeight: "bold" }}>
               {" "}
               {data.item.note.slice(0, 30)}{" "}
             </Text>

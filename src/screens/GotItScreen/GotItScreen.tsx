@@ -809,7 +809,7 @@ const GotItScreen = ({ navigation }: Props) => {
                     }}
                     onPress={() => navigation.navigate("NeedItScreen")}
                   >
-                    <FontAwesome name="share" color="#000000" size={18} />
+                    <FontAwesome name="share" color="#FFFFFF" size={18} />
                   </TouchableOpacity>
                 </View>
               )}
