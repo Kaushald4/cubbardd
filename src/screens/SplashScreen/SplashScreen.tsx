@@ -63,6 +63,11 @@ const MySplashScreen = ({ navigation }: Props) => {
     <SafeAreaView
       style={[styles.container, { backgroundColor: theme.colors.primary }]}
     >
+      <StatusBar
+        translucent
+        barStyle="dark-content"
+        backgroundColor="transparent"
+      />
       <View style={styles.brand}>
         <Logo />
         <Animated.View

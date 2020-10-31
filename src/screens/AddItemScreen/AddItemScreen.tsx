@@ -93,30 +93,38 @@ const AddItemScreen = ({ navigation, route }: Props) => {
         if (note) {
           const authData = await AsyncStorage.getItem("token");
           const { token, id } = JSON.parse(authData as string);
-          if (note.length >= 2) {
-            if (screenName === "Need It") {
-              setIsLoading(true);
-              const createdItem = await createNeedItNotes({
-                note,
-                userID: id,
-                token,
-              });
-              setItems([...items, createdItem]);
-              setPlaceHolder("");
-              setTextFieldShown(false);
-              setIsLoading(false);
-            } else {
-              setIsLoading(true);
-              const createdItem = await createGotitNotes({
-                note,
-                userID: id,
-                token,
-              });
-              setItems([...items, createdItem]);
-              setPlaceHolder("");
-              setTextFieldShown(false);
-              setIsLoading(false);
+          if (items.length < 5) {
+            if (note.length >= 2) {
+              if (screenName === "Need It") {
+                setIsLoading(true);
+                const createdItem = await createNeedItNotes({
+                  note,
+                  userID: id,
+                  token,
+                });
+                setItems([...items, createdItem]);
+                setPlaceHolder("");
+                setTextFieldShown(false);
+                setIsLoading(false);
+              } else {
+                setIsLoading(true);
+                const createdItem = await createGotitNotes({
+                  note,
+                  userID: id,
+                  token,
+                });
+                setItems([...items, createdItem]);
+                setPlaceHolder("");
+                setTextFieldShown(false);
+                setIsLoading(false);
+              }
             }
+          } else {
+            Alert.alert(
+              "You can not add more than five items at the same time.",
+              "",
+              [{ text: "OK", style: "cancel", onPress: () => {} }]
+            );
           }
         }
       }

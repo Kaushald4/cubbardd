@@ -29,6 +29,16 @@
 <key>FacebookDisplayName</key>
 <string>Cubbard</string>
 
+<key>GADApplicationIdentifier</key>
+<string>ca-app-pub-7830260140012280~8017952633</string>
+<key>SKAdNetworkItems</key>
+  <array>
+    <dict>
+      <key>SKAdNetworkIdentifier</key>
+      <string>cstr6suwn9.skadnetwork</string>
+    </dict>
+  </array>
+
 
 <key>LSApplicationQueriesSchemes</key>
 <array>

@@ -14,9 +14,9 @@ interface User {
 export async function logInWithFacebook() {
   return new Promise<User>(async (resolve, reject) => {
     try {
-      // if (Platform.OS === "android") {
-      //   LoginManager.setLoginBehavior("web_only");
-      // }
+      if (Platform.OS === "android") {
+        LoginManager.setLoginBehavior("web_only");
+      }
 
       const res = await LoginManager.logInWithPermissions([
         "public_profile",
@@ -93,9 +93,9 @@ export async function logInWithFacebook() {
 export async function signupWithFacebook() {
   return new Promise<User>(async (resolve, reject) => {
     try {
-      // if (Platform.OS === "android") {
-      //   LoginManager.setLoginBehavior("web_only");
-      // }
+      if (Platform.OS === "android") {
+        LoginManager.setLoginBehavior("web_only");
+      }
       const res = await LoginManager.logInWithPermissions([
         "public_profile",
       ]).then(

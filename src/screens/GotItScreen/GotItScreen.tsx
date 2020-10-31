@@ -15,7 +15,7 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
-import { Constants } from "react-native-unimodules";
+import { AdMobBanner, PublisherBanner } from "react-native-admob";
 
 import {
   LoadingIndicator,
@@ -33,11 +33,14 @@ import {
   markGotItNotesLow,
   moveToNeedIt,
   updateGotItNotes,
-  markGotItNotesNotLow,
   handleLowGotItNote,
 } from "../../services";
 import AsyncStorage from "@react-native-community/async-storage";
-import { heightToDp, widthToDp } from "../../utils";
+import {
+  heightToDp,
+  widthToDp,
+  bottomNavBarHeight,
+} from "../../utils/dimensions";
 import SimpleToast from "react-native-simple-toast";
 
 const { width, height, scale, fontScale } = Dimensions.get("window");
@@ -680,6 +683,12 @@ const GotItScreen = ({ navigation }: Props) => {
     );
   }
 
+  const BannerAddWrapper = ({ style, children, ...props }: any) => (
+    <View {...props} style={style}>
+      <View>{children}</View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <MyAppbar
@@ -912,6 +921,9 @@ const GotItScreen = ({ navigation }: Props) => {
                   alignSelf: "center",
                   justifyContent: "center",
                   alignItems: "center",
+                  marginTop: Platform.OS === "android" ? heightToDp("2%") : 0,
+                  position: "relative",
+                  // bottom: -heightToDp("5%"),
                 }}
               >
                 <Entypo name="plus" size={20} />
@@ -947,6 +959,23 @@ const GotItScreen = ({ navigation }: Props) => {
             </View>
           )}
         </View>
+        <BannerAddWrapper
+          style={{
+            paddingTop: Platform.OS === "android" ? heightToDp("4%") : 0,
+          }}
+        >
+          <AdMobBanner
+            adSize="smartBannerPortrait"
+            adUnitID={
+              Platform.OS === "android"
+                ? "ca-app-pub-3940256099942544/2934735716"
+                : "ca-app-pub-3940256099942544/2934735716"
+            }
+            onAdFailedToLoad={(error) => {
+              console.log(error);
+            }}
+          />
+        </BannerAddWrapper>
       </ImageBackground>
     </SafeAreaView>
   );

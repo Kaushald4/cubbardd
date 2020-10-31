@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dimensions,
   ImageBackground,
@@ -16,6 +16,8 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
+import { AdMobBanner, PublisherBanner } from "react-native-admob";
+import DeviceInfo from "react-native-device-info";
 
 import {
   LoadingIndicator,
@@ -25,7 +27,7 @@ import {
   PopuptextField,
 } from "../../components";
 import { Props } from "./types";
-import { useTheme, Text } from "react-native-paper";
+import { useTheme, Text, Button } from "react-native-paper";
 import AsyncStorage from "@react-native-community/async-storage";
 import {
   copyNotesToGotIt,
@@ -37,13 +39,18 @@ import {
   markNeedItNotesNotLow,
   handleLowNeedItNote,
 } from "../../services/NeedIt/needit";
-import { heightToDp, widthToDp } from "../../utils/dimensions";
+import {
+  heightToDp,
+  widthToDp,
+  bottomNavBarHeight,
+} from "../../utils/dimensions";
 import SimpleToast from "react-native-simple-toast";
 
 const { width, height, fontScale } = Dimensions.get("window");
 
 const NeedItScreen = ({ navigation }: Props) => {
   const theme = useTheme();
+  const bannerAd = useRef<any>();
   const [items, setItems] = useState<any>([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isLoding, setIsLoading] = useState(false);
@@ -54,7 +61,7 @@ const NeedItScreen = ({ navigation }: Props) => {
   const [isMenuItemShown, setIsMenuItemShown] = useState(false);
   const [showBtn, seBtnShow] = useState(false);
   const [AllselectedItemLow, setSelectedItemLow] = useState(false);
-
+  const [deviceID, setDeviceID] = useState();
   //TODO: remove navigation lisetner when component will unmount
   useEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -125,6 +132,10 @@ const NeedItScreen = ({ navigation }: Props) => {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    setDeviceID(DeviceInfo.getDeviceId());
+  }, [DeviceInfo]);
 
   //swipe delete
   const singleSwipeDelete = async (id: string | undefined) => {
@@ -674,6 +685,12 @@ const NeedItScreen = ({ navigation }: Props) => {
     );
   }
 
+  const BannerAddWrapper = ({ style, children, ...props }: any) => (
+    <View {...props} style={style}>
+      <View>{children}</View>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <MyAppbar
@@ -909,8 +926,9 @@ const NeedItScreen = ({ navigation }: Props) => {
                   alignSelf: "center",
                   justifyContent: "center",
                   alignItems: "center",
-                  marginTop: Platform.OS === "android" ? heightToDp("4%") : 0,
-                  marginBottom: heightToDp("4%"),
+                  marginTop:
+                    Platform.OS === "android" ? -bottomNavBarHeight + 54 : 0,
+                  position: "relative",
                 }}
               >
                 <Entypo name="plus" size={20} />
@@ -946,6 +964,40 @@ const NeedItScreen = ({ navigation }: Props) => {
             </View>
           )}
         </View>
+        {/* <View
+          style={{
+            width: widthToDp("100%"),
+            alignItems: "center",
+          }}
+        >
+          {Platform.OS === "android" ? (
+            <Text>hhhhh</Text>
+          ) : (
+            <AdMobBanner
+              bannerSize="fullBanner"
+              adUnitID="ca-app-pub-3940256099942544/2934735716"
+              testDevices={[AdMobBanner.simulatorId]}
+              onAdFailedToLoad={(error) => console.error(error)}
+            />
+          )}
+        </View> */}
+        <BannerAddWrapper
+          style={{
+            paddingTop: Platform.OS === "android" ? heightToDp("4%") : 0,
+          }}
+        >
+          <AdMobBanner
+            adSize="smartBannerPortrait"
+            adUnitID={
+              Platform.OS === "android"
+                ? "ca-app-pub-3940256099942544/2934735716"
+                : "ca-app-pub-3940256099942544/2934735716"
+            }
+            onAdFailedToLoad={(error) => {
+              console.log(error);
+            }}
+          />
+        </BannerAddWrapper>
       </ImageBackground>
     </SafeAreaView>
   );
