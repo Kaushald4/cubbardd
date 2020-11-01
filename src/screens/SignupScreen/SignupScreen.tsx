@@ -37,6 +37,7 @@ import {
   widthToDp,
 } from "../../utils";
 import { signupWithFacebook, skipAuth } from "../../services";
+import SimpleToast from "react-native-simple-toast";
 
 const { width, height } = Dimensions.get("window");
 
@@ -136,6 +137,11 @@ const SignupScreen = ({ navigation }: Props) => {
                       actions.setSubmitting(false);
                       setFormSubmitting(false);
                       actions.setErrors(user.error);
+                    } else if (user.message) {
+                      actions.setSubmitting(false);
+                      setFormSubmitting(false);
+                      SimpleToast.show(user.message);
+                      navigation.replace("LoginScreen");
                     } else {
                       actions.setSubmitting(false);
                       setFormSubmitting(false);

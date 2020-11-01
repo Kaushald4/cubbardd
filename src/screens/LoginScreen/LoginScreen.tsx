@@ -146,11 +146,14 @@ const LoginScreen = ({ navigation }: Props) => {
                       setFormSubmitting(false);
                       SimpleToast.show("Signed in successfully.");
                       navigation.replace("Home");
+                    } else if (user.verificationError) {
+                      actions.setSubmitting(false);
+                      setFormSubmitting(false);
+                      SimpleToast.show(user.verificationError);
                     }
                   } catch (error) {
                     console.log("error occured at signup process ", error);
                   }
-                  console.log("submited");
                 }}
               >
                 {({

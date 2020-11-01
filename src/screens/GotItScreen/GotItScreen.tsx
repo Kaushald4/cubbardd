@@ -968,8 +968,8 @@ const GotItScreen = ({ navigation }: Props) => {
             adSize="smartBannerPortrait"
             adUnitID={
               Platform.OS === "android"
-                ? "ca-app-pub-3940256099942544/2934735716"
-                : "ca-app-pub-3940256099942544/2934735716"
+                ? "ca-app-pub-7830260140012280/8150965953"
+                : "ca-app-pub-7830260140012280/7883372644"
             }
             onAdFailedToLoad={(error) => {
               console.log(error);

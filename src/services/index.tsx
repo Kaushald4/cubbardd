@@ -31,3 +31,5 @@ export {
 } from "./NeedIt/needit";
 
 export { signout } from "./Auth/signout";
+
+export { forgotPassword } from "./Auth/forgotPassword";
