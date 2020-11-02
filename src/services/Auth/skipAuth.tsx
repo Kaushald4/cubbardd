@@ -129,13 +129,13 @@ export const saveAsyncItemToDB = async ({
     const userNotes = JSON.parse(userNotesData);
 
     if (userNotes.needIt.length > 0 && userNotes.gotIt.length > 0) {
-      if (userNotes.gotIt.length <= 1) {
+      if (userNotes.gotIt.length === 1) {
         await createGotitNotes({
           userID: userID,
           token: token,
           note: userNotes.gotIt[0].note,
         });
-      } else {
+      } else if (userNotes.gotIt.length > 1) {
         await createGotitNotes({
           userID: userID,
           token: token,
@@ -147,32 +147,13 @@ export const saveAsyncItemToDB = async ({
           note: userNotes.gotIt[1].note,
         });
       }
-      if (userNotes.needIt.length <= 1) {
+      if (userNotes.needIt.length === 1) {
         await createNeedItNotes({
           userID: userID,
           token: token,
           note: userNotes.needIt[0].note,
         });
-      } else {
-        await createNeedItNotes({
-          userID: userID,
-          token: token,
-          note: userNotes.needIt[0].note,
-        });
-        await createNeedItNotes({
-          userID: userID,
-          token: token,
-          note: userNotes.needIt[1].note,
-        });
-      }
-    } else if (userNotes.needIt) {
-      if (userNotes.needIt.length <= 1) {
-        await createNeedItNotes({
-          userID: userID,
-          token: token,
-          note: userNotes.needIt[0].note,
-        });
-      } else {
+      } else if (userNotes.needIt.length > 1) {
         await createNeedItNotes({
           userID: userID,
           token: token,
@@ -184,14 +165,33 @@ export const saveAsyncItemToDB = async ({
           note: userNotes.needIt[1].note,
         });
       }
-    } else if (userNotes.gotIt) {
-      if (userNotes.gotIt.length <= 1) {
+    } else if (userNotes.needIt.length) {
+      if (userNotes.needIt.length === 1) {
+        await createNeedItNotes({
+          userID: userID,
+          token: token,
+          note: userNotes.needIt[0].note,
+        });
+      } else if (userNotes.needIt.length > 1) {
+        await createNeedItNotes({
+          userID: userID,
+          token: token,
+          note: userNotes.needIt[0].note,
+        });
+        await createNeedItNotes({
+          userID: userID,
+          token: token,
+          note: userNotes.needIt[1].note,
+        });
+      }
+    } else if (userNotes.gotIt.length) {
+      if (userNotes.gotIt.length === 1) {
         await createGotitNotes({
           userID: userID,
           token: token,
           note: userNotes.gotIt[0].note,
         });
-      } else {
+      } else if (userNotes.gotIt.length > 1) {
         await createGotitNotes({
           userID: userID,
           token: token,

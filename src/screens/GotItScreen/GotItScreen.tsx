@@ -965,7 +965,9 @@ const GotItScreen = ({ navigation }: Props) => {
           }}
         >
           <AdMobBanner
-            adSize="smartBannerPortrait"
+            adSize={
+              Platform.OS === "android" ? "smartBannerPortrait" : "fullBanner"
+            }
             adUnitID={
               Platform.OS === "android"
                 ? "ca-app-pub-7830260140012280/8150965953"
@@ -1021,10 +1023,11 @@ const styles = StyleSheet.create({
     height:
       Platform.OS === "android"
         ? heightToDp("75%")
-        : (height / fontScale) * 0.8,
+        : (height / fontScale) * 0.77,
   },
   bottomText: {
     paddingHorizontal: 28,
+    paddingBottom: 20,
   },
   bottomTextButton: {
     flexDirection: "row",

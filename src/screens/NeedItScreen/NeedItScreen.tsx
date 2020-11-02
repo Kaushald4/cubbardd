@@ -177,6 +177,7 @@ const NeedItScreen = ({ navigation }: Props) => {
     });
     const isSkippedData = await AsyncStorage.getItem("skippedAuth");
     const userNotesData = await AsyncStorage.getItem("userNotes");
+
     if (isSkippedData && JSON.parse(isSkippedData)) {
       if (notesId.length > 1) {
         if (userNotesData) {
@@ -929,6 +930,7 @@ const NeedItScreen = ({ navigation }: Props) => {
                   marginTop:
                     Platform.OS === "android" ? -bottomNavBarHeight + 54 : 0,
                   position: "relative",
+                  marginBottom: Platform.OS === "android" ? 0 : 5,
                 }}
               >
                 <Entypo name="plus" size={20} />
@@ -987,7 +989,9 @@ const NeedItScreen = ({ navigation }: Props) => {
           }}
         >
           <AdMobBanner
-            adSize="smartBannerPortrait"
+            adSize={
+              Platform.OS === "android" ? "smartBannerPortrait" : "fullBanner"
+            }
             adUnitID={
               Platform.OS === "android"
                 ? "ca-app-pub-7830260140012280/8150965953"
@@ -1043,10 +1047,11 @@ const styles = StyleSheet.create({
     height:
       Platform.OS === "android"
         ? heightToDp("75%")
-        : (height / fontScale) * 0.8,
+        : (height / fontScale) * 0.77,
   },
   bottomText: {
     paddingHorizontal: 28,
+    paddingBottom: 20,
   },
   bottomTextButton: {
     flexDirection: "row",
