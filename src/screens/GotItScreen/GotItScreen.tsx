@@ -18,6 +18,7 @@ import MaterailIcons from "react-native-vector-icons/MaterialIcons";
 import { AdMobBanner, PublisherBanner } from "react-native-admob";
 
 import {
+  GoogleAdds,
   LoadingIndicator,
   MyAppbar,
   MyListview,
@@ -964,19 +965,7 @@ const GotItScreen = ({ navigation }: Props) => {
             paddingTop: Platform.OS === "android" ? heightToDp("4%") : 0,
           }}
         >
-          <AdMobBanner
-            adSize={
-              Platform.OS === "android" ? "smartBannerPortrait" : "fullBanner"
-            }
-            adUnitID={
-              Platform.OS === "android"
-                ? "ca-app-pub-7830260140012280/8150965953"
-                : "ca-app-pub-7830260140012280/7883372644"
-            }
-            onAdFailedToLoad={(error) => {
-              console.log(error);
-            }}
-          />
+          <GoogleAdds />
         </BannerAddWrapper>
       </ImageBackground>
     </SafeAreaView>

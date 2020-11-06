@@ -71,10 +71,10 @@ const SignupScreen = ({ navigation }: Props) => {
       );
     } else if (user.cancel) {
       setFbLoading(false);
-    } else if (user.token) {
-      Toast.show("Account created successfully", Toast.SHORT);
+    } else if (user.token && user.message) {
+      SimpleToast.show(user.message);
+      // Toast.show("Account created successfully", Toast.SHORT);
       navigation.replace("Home");
-      console.log(user);
     }
   };
 

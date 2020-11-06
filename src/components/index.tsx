@@ -7,3 +7,4 @@ export { default as LoadingIndicator } from "./LoadingIndicator/LoadingIndicator
 export { default as MyAppbar } from "./AppBar/appbar";
 export { default as MyListview } from "./MyListview/MyListview";
 export { default as PopuptextField } from "./PopupTextFielddialog/PopuptextField";
+export { default as GoogleAdds } from "./GoogleAdds/googleAdds";

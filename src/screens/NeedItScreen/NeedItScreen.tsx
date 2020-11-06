@@ -16,10 +16,10 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
-import { AdMobBanner, PublisherBanner } from "react-native-admob";
 import DeviceInfo from "react-native-device-info";
 
 import {
+  GoogleAdds,
   LoadingIndicator,
   MyAppbar,
   MyListview,
@@ -988,19 +988,7 @@ const NeedItScreen = ({ navigation }: Props) => {
             paddingTop: Platform.OS === "android" ? heightToDp("4%") : 0,
           }}
         >
-          <AdMobBanner
-            adSize={
-              Platform.OS === "android" ? "smartBannerPortrait" : "fullBanner"
-            }
-            adUnitID={
-              Platform.OS === "android"
-                ? "ca-app-pub-7830260140012280/8150965953"
-                : "ca-app-pub-7830260140012280/7883372644"
-            }
-            onAdFailedToLoad={(error) => {
-              console.log(error);
-            }}
-          />
+          <GoogleAdds />
         </BannerAddWrapper>
       </ImageBackground>
     </SafeAreaView>
