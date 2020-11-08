@@ -75,6 +75,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
             setPlaceHolder("");
             setTextFieldShown(false);
             setIsLoading(false);
+            setNewItem("");
           }
         } else {
           if (note.length >= 2) {
@@ -89,13 +90,14 @@ const AddItemScreen = ({ navigation, route }: Props) => {
             setPlaceHolder("");
             setTextFieldShown(false);
             setIsLoading(false);
+            setNewItem("");
           }
         }
       } else {
         if (note) {
           const authData = await AsyncStorage.getItem("token");
           const { token, id } = JSON.parse(authData as string);
-          if (items.length < 5) {
+          if (items.length < 20) {
             if (note.length >= 2) {
               if (screenName === "Need It") {
                 setIsLoading(true);
@@ -108,6 +110,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                 setPlaceHolder("");
                 setTextFieldShown(false);
                 setIsLoading(false);
+                setNewItem("");
               } else {
                 setIsLoading(true);
                 const createdItem = await createGotitNotes({
@@ -119,13 +122,25 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                 setPlaceHolder("");
                 setTextFieldShown(false);
                 setIsLoading(false);
+                setNewItem("");
               }
             }
           } else {
             Alert.alert(
-              "You can not add more than five items at the same time.",
+              "You can not add more than 20 items at the same time.",
               "",
-              [{ text: "OK", style: "cancel", onPress: () => {} }]
+              [
+                {
+                  text: "OK",
+                  style: "cancel",
+                  onPress: () => {
+                    setPlaceHolder("");
+                    setTextFieldShown(false);
+                    setIsLoading(false);
+                    setNewItem("");
+                  },
+                },
+              ]
             );
           }
         }
@@ -250,21 +265,23 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                               paddingBottom: heightToDp("2%"),
                             }}
                           >
-                            <Pressable
-                              android_ripple={{
-                                color: theme.colors.background,
-                                radius: 200,
-                              }}
-                              onPress={() =>
-                                setTextFieldShown(!isTextFieldShown)
-                              }
-                            >
-                              <Entypo
-                                name="circle-with-plus"
-                                color={theme.colors.accent}
-                                size={45}
-                              />
-                            </Pressable>
+                            {items.length < 20 && (
+                              <Pressable
+                                android_ripple={{
+                                  color: theme.colors.background,
+                                  radius: 200,
+                                }}
+                                onPress={() =>
+                                  setTextFieldShown(!isTextFieldShown)
+                                }
+                              >
+                                <Entypo
+                                  name="circle-with-plus"
+                                  color={theme.colors.accent}
+                                  size={45}
+                                />
+                              </Pressable>
+                            )}
                             <Pressable
                               android_ripple={{ color: theme.colors.primary }}
                               onPress={async () => {
