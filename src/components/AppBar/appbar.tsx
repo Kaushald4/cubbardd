@@ -22,6 +22,7 @@ import MyText from "../MyText/MyText";
 import { signout } from "../../services";
 import { heightToDp, widthToDp } from "../../utils";
 import { Constants } from "react-native-unimodules";
+import SimpleToast from "react-native-simple-toast";
 
 const { fontScale } = Dimensions.get("window");
 
@@ -99,8 +100,22 @@ const Appbar = ({
         </MenuOptions>
       </Menu>
       <TouchableOpacity
-        onPress={() => {
-          signout(navigation);
+        onPress={async () => {
+          const authData = await AsyncStorage.getItem("token");
+          if (authData && JSON.parse(authData)) {
+            Alert.alert("Are you sure want to logout!", "", [
+              {
+                onPress: () => {
+                  signout(navigation);
+                  SimpleToast.show("Logged out successfully.");
+                },
+                text: "Logout",
+              },
+              { onPress: () => {}, text: "Cancel", style: "cancel" },
+            ]);
+          } else {
+            navigation.replace("SignUpScreen");
+          }
         }}
       >
         <FontAwesome

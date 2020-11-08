@@ -51,7 +51,7 @@ const MySplashScreen = ({ navigation }: Props) => {
         }, 2000);
       } else {
         let clearInterval2 = setTimeout(() => {
-          navigation.replace("LoginScreen");
+          navigation.replace("SignUpScreen");
         }, 2000);
       }
     } catch (error) {

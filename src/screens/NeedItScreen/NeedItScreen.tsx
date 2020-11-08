@@ -740,13 +740,14 @@ const NeedItScreen = ({ navigation }: Props) => {
                   }}
                 >
                   {selectedItems.length <= 1 && (
-                    <MyText
-                      text="Got it!"
-                      color="#FFFFFF"
-                      size={18}
-                      pt={(height / fontScale) * 0.1}
-                      ff="Ubuntu-Bold"
-                    />
+                    // <MyText
+                    //   text="Got it!"
+                    //   color="#FFFFFF"
+                    //   size={18}
+                    //   pt={(height / fontScale) * 0.1}
+                    //   ff="Ubuntu-Bold"
+                    // />
+                    <View />
                   )}
                   {/* multiple select buttons section */}
                   {selectedItems.length > 1 && (
@@ -780,12 +781,17 @@ const NeedItScreen = ({ navigation }: Props) => {
                           android_ripple={{ color: "#FFFFFF" }}
                           style={{
                             marginRight: 10,
+                            backgroundColor: "#000000",
                             borderRadius: 4,
                             overflow: "hidden",
                             paddingHorizontal: 8,
                           }}
                         >
-                          <Image source={require("../../assets/low.png")} />
+                          <Text
+                            style={{ textAlign: "center", color: "#FFFFFF" }}
+                          >
+                            Low
+                          </Text>
                         </Pressable>
                       ) : (
                         <>
@@ -818,9 +824,19 @@ const NeedItScreen = ({ navigation }: Props) => {
                     style={{
                       paddingTop: (height / fontScale) * 0.1,
                       paddingLeft: 14,
+                      flexDirection: "row",
                     }}
                     onPress={() => navigation.navigate("GotItScreen")}
                   >
+                    {selectedItems.length <= 1 && (
+                      <MyText
+                        text="Got it!"
+                        color="#FFFFFF"
+                        size={18}
+                        pr={10}
+                        ff="Ubuntu-Bold"
+                      />
+                    )}
                     <FontAwesome name="share" color="#FFFFFF" size={18} />
                   </TouchableOpacity>
                 </View>
@@ -913,29 +929,80 @@ const NeedItScreen = ({ navigation }: Props) => {
           </View>
 
           {items.length >= 1 && (
-            <Pressable
-              onPress={() =>
-                navigation.navigate("AddItemsScreen", { screenName: "Need It" })
-              }
-            >
-              <View
-                style={{
-                  width: widthToDp("15%"),
-                  height: widthToDp("15%"),
-                  borderRadius: 500,
-                  backgroundColor: "#FFFFFF",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop:
-                    Platform.OS === "android" ? -bottomNavBarHeight + 54 : 0,
-                  position: "relative",
-                  marginBottom: Platform.OS === "android" ? 0 : 5,
-                }}
-              >
-                <Entypo name="plus" size={20} />
-              </View>
-            </Pressable>
+            <>
+              {showBtn ? (
+                <Pressable
+                  onPress={() => {
+                    const notesId = selectedItems.filter((el) => el._id);
+                    Alert.alert(
+                      "Would you like to move the item(s) to the Got it list?",
+                      "",
+                      [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Move",
+                          onPress: async () => {
+                            await moveToGotItList(notesId, false, false);
+                            SimpleToast.show(
+                              `Moved ${selectedItems.length} to the got it list.`
+                            );
+                            navigation.navigate("GotItScreen");
+                          },
+                        },
+                      ]
+                    );
+                  }}
+                >
+                  <View
+                    style={{
+                      width: widthToDp("15%"),
+                      height: widthToDp("15%"),
+                      borderRadius: 500,
+                      backgroundColor: "#FFFFFF",
+                      alignSelf: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop:
+                        Platform.OS === "android"
+                          ? -bottomNavBarHeight + 54
+                          : 0,
+                      position: "relative",
+                      marginBottom: Platform.OS === "android" ? 0 : 5,
+                    }}
+                  >
+                    <Entypo name="arrow-right" size={20} />
+                  </View>
+                </Pressable>
+              ) : (
+                <Pressable
+                  onPress={() =>
+                    navigation.navigate("AddItemsScreen", {
+                      screenName: "Need It",
+                    })
+                  }
+                >
+                  <View
+                    style={{
+                      width: widthToDp("15%"),
+                      height: widthToDp("15%"),
+                      borderRadius: 500,
+                      backgroundColor: "#FFFFFF",
+                      alignSelf: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop:
+                        Platform.OS === "android"
+                          ? -bottomNavBarHeight + 54
+                          : 0,
+                      position: "relative",
+                      marginBottom: Platform.OS === "android" ? 0 : 5,
+                    }}
+                  >
+                    <Entypo name="plus" size={20} />
+                  </View>
+                </Pressable>
+              )}
+            </>
           )}
 
           {/* {bottom section} */}

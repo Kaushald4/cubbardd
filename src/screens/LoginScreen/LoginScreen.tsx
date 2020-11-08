@@ -115,7 +115,7 @@ const LoginScreen = ({ navigation }: Props) => {
           <View style={styles.wrapper}>
             <Logo />
             <MyText
-              text="cubbard"
+              text="Welcome Back!"
               size={30}
               pt={10}
               color="#FFFFFF"

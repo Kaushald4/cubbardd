@@ -110,7 +110,7 @@ const SignupScreen = ({ navigation }: Props) => {
           <View style={styles.wrapper}>
             <Logo />
             <MyText
-              text="cubbard"
+              text="Register Here"
               size={30}
               pt={10}
               color="#FFFFFF"

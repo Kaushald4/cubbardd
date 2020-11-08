@@ -738,13 +738,14 @@ const GotItScreen = ({ navigation }: Props) => {
                   }}
                 >
                   {selectedItems.length <= 1 && (
-                    <MyText
-                      text="Need it!"
-                      color="#FFFFFF"
-                      size={18}
-                      pt={(height / fontScale) * 0.1}
-                      ff="Ubuntu-Bold"
-                    />
+                    // <MyText
+                    //   text="Need it!"
+                    //   color="#FFFFFF"
+                    //   size={18}
+                    //   pt={(height / fontScale) * 0.1}
+                    //   ff="Ubuntu-Bold"
+                    // />
+                    <View />
                   )}
                   {/* multiple select buttons section */}
                   {selectedItems.length > 1 && (
@@ -778,12 +779,17 @@ const GotItScreen = ({ navigation }: Props) => {
                           android_ripple={{ color: "#FFFFFF" }}
                           style={{
                             marginRight: 10,
+                            backgroundColor: "#000000",
                             borderRadius: 4,
                             overflow: "hidden",
                             paddingHorizontal: 8,
                           }}
                         >
-                          <Image source={require("../../assets/low.png")} />
+                          <Text
+                            style={{ textAlign: "center", color: "#FFFFFF" }}
+                          >
+                            Low
+                          </Text>
                         </Pressable>
                       ) : (
                         <>
@@ -798,9 +804,7 @@ const GotItScreen = ({ navigation }: Props) => {
                                 paddingHorizontal: 8,
                               }}
                             >
-                              <Image
-                                source={require("../../assets/notlow.png")}
-                              />
+                              <Image source={require("../../assets/low.png")} />
                             </Pressable>
                           ) : (
                             <View />
@@ -816,9 +820,19 @@ const GotItScreen = ({ navigation }: Props) => {
                     style={{
                       paddingTop: (height / fontScale) * 0.1,
                       paddingLeft: 14,
+                      flexDirection: "row",
                     }}
                     onPress={() => navigation.navigate("NeedItScreen")}
                   >
+                    {selectedItems.length <= 1 && (
+                      <MyText
+                        text="Need it!"
+                        color="#FFFFFF"
+                        size={18}
+                        pr={10}
+                        ff="Ubuntu-Bold"
+                      />
+                    )}
                     <FontAwesome name="share" color="#FFFFFF" size={18} />
                   </TouchableOpacity>
                 </View>
@@ -907,29 +921,78 @@ const GotItScreen = ({ navigation }: Props) => {
           </View>
 
           {items.length >= 1 && (
-            <Pressable
-              style={{ marginBottom: heightToDp("2%") }}
-              onPress={() =>
-                navigation.navigate("AddItemsScreen", { screenName: "Got It" })
-              }
-            >
-              <View
-                style={{
-                  width: widthToDp("15%"),
-                  height: widthToDp("15%"),
-                  borderRadius: 500,
-                  backgroundColor: "#FFFFFF",
-                  alignSelf: "center",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: Platform.OS === "android" ? heightToDp("2%") : 0,
-                  position: "relative",
-                  // bottom: -heightToDp("5%"),
-                }}
-              >
-                <Entypo name="plus" size={20} />
-              </View>
-            </Pressable>
+            <>
+              {showBtn ? (
+                <Pressable
+                  style={{ marginBottom: heightToDp("2%") }}
+                  onPress={() => {
+                    const notesId = selectedItems.filter((el) => el._id);
+                    Alert.alert(
+                      "Would you like to move the item(s) to the Need it list?",
+                      "",
+                      [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Move",
+                          onPress: async () => {
+                            await moveToNeedItList(notesId, false, false);
+                            SimpleToast.show(
+                              `Moved ${selectedItems.length} to the need it list.`
+                            );
+                            navigation.navigate("NeedItScreen");
+                          },
+                        },
+                      ]
+                    );
+                  }}
+                >
+                  <View
+                    style={{
+                      width: widthToDp("15%"),
+                      height: widthToDp("15%"),
+                      borderRadius: 500,
+                      backgroundColor: "#FFFFFF",
+                      alignSelf: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop:
+                        Platform.OS === "android" ? heightToDp("2%") : 0,
+                      position: "relative",
+                      // bottom: -heightToDp("5%"),
+                    }}
+                  >
+                    <Entypo name="arrow-left" size={20} />
+                  </View>
+                </Pressable>
+              ) : (
+                <Pressable
+                  style={{ marginBottom: heightToDp("2%") }}
+                  onPress={() =>
+                    navigation.navigate("AddItemsScreen", {
+                      screenName: "Got It",
+                    })
+                  }
+                >
+                  <View
+                    style={{
+                      width: widthToDp("15%"),
+                      height: widthToDp("15%"),
+                      borderRadius: 500,
+                      backgroundColor: "#FFFFFF",
+                      alignSelf: "center",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginTop:
+                        Platform.OS === "android" ? heightToDp("2%") : 0,
+                      position: "relative",
+                      // bottom: -heightToDp("5%"),
+                    }}
+                  >
+                    <Entypo name="plus" size={20} />
+                  </View>
+                </Pressable>
+              )}
+            </>
           )}
 
           {/* {bottom section} */}

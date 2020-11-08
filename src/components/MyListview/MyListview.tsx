@@ -11,6 +11,7 @@ import {
   Pressable,
   UIManager,
   Image,
+  Alert,
 } from "react-native";
 import { Constants } from "react-native-unimodules";
 import MaterailIcons from "react-native-vector-icons/MaterialIcons";
@@ -230,7 +231,11 @@ export default function MyListView({
                         ? "flex"
                         : "none",
                   }}
-                  source={require("../../assets/notlow.png")}
+                  source={
+                    screenName === "NeedIt"
+                      ? require("../../assets/notlow.png")
+                      : require("../../assets/low.png")
+                  }
                 />
               </Pressable>
             ) : (
@@ -240,7 +245,7 @@ export default function MyListView({
                   await markNoteAsLow();
                 }}
               >
-                {/* <Text
+                <Text
                   style={{
                     marginRight: 10,
                     backgroundColor: theme.colors.primary,
@@ -254,8 +259,8 @@ export default function MyListView({
                   }}
                 >
                   Low
-                </Text> */}
-                <Image
+                </Text>
+                {/* <Image
                   style={{
                     marginRight: 20,
                     display:
@@ -264,7 +269,7 @@ export default function MyListView({
                         : "none",
                   }}
                   source={require("../../assets/low.png")}
-                />
+                /> */}
               </Pressable>
             )}
             <Pressable
@@ -292,23 +297,67 @@ export default function MyListView({
     const swipedItem = listData.filter((el) => el._id === id);
     if (Swipedata.translateX >= width * 0.2) {
       if (screenName === "NeedIt") {
-        await moveToGotItList([id], swipedItem[0].low, false);
-        clearPrevDataOnSwipe(id);
-        getAllNotes();
+        Alert.alert("Would you like to move the item to the Got it list?", "", [
+          { text: "Cancel", style: "cancel" },
+          {
+            text: "Move",
+            onPress: async () => {
+              await moveToGotItList([id], swipedItem[0].low, false);
+              clearPrevDataOnSwipe(id);
+              getAllNotes();
+            },
+          },
+        ]);
       } else if (screenName === "GotIt") {
-        await moveToNeedItList([id], swipedItem[0].low, false);
-        clearPrevDataOnSwipe(id);
-        getAllNotes();
+        Alert.alert(
+          "Would you like to move the item to the Need it list?",
+          "",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Move",
+              onPress: async () => {
+                await moveToNeedItList([id], swipedItem[0].low, false);
+                clearPrevDataOnSwipe(id);
+                getAllNotes();
+              },
+            },
+          ]
+        );
       }
     } else if (Swipedata.translateX <= -width * 0.2) {
       if (screenName === "NeedIt") {
-        await moveToGotItList([id], swipedItem[0].low, false);
-        clearPrevDataOnSwipe(id);
-        getAllNotes();
+        Alert.alert("Would you like to move the item to the Got it list?", "", [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => {},
+          },
+          {
+            text: "Move",
+            onPress: async () => {
+              await moveToGotItList([id], swipedItem[0].low, false);
+              clearPrevDataOnSwipe(id);
+              getAllNotes();
+            },
+          },
+        ]);
       } else if (screenName === "GotIt") {
-        await moveToNeedItList([id], swipedItem[0].low, false);
-        clearPrevDataOnSwipe(id);
-        getAllNotes();
+        Alert.alert(
+          "Would you like to move the item to the Need it list?",
+          "",
+          [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Move",
+              onPress: async () => {
+                await moveToNeedItList([id], swipedItem[0].low, false);
+                clearPrevDataOnSwipe(id);
+                getAllNotes();
+              },
+            },
+          ]
+        );
       }
     }
   };
@@ -435,8 +484,8 @@ export default function MyListView({
         data={listData}
         renderItem={renderItem}
         renderHiddenItem={() => <View />}
-        leftOpenValue={150}
-        rightOpenValue={-150}
+        // leftOpenValue={150}
+        // rightOpenValue={-150}
         nestedScrollEnabled
         previewRowKey={"0"}
         // previewOpenValue={-40}

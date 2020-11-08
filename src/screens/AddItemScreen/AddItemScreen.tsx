@@ -9,9 +9,11 @@ import {
   View,
   TextInput,
   Alert,
+  Platform,
 } from "react-native";
 import Entypo from "react-native-vector-icons/Entypo";
 import Fontawesome from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Constants } from "react-native-unimodules";
 import { useTheme } from "react-native-paper";
 
@@ -143,6 +145,18 @@ const AddItemScreen = ({ navigation, route }: Props) => {
         keyboardDismissMode="interactive"
       >
         <LoadingIndicator isVisible={isLoading} title="Adding...." />
+        <Pressable
+          style={{
+            paddingLeft: 20,
+            position: "absolute",
+            top:
+              Platform.OS === "android" ? Constants.statusBarHeight + 20 : 10,
+            zIndex: 9999999,
+          }}
+          onPress={() => navigation.goBack()}
+        >
+          <MaterialIcons name="arrow-back" size={28} />
+        </Pressable>
         <TouchableWithoutFeedback
           onPress={() => Keyboard.dismiss()}
           style={{ height }}
