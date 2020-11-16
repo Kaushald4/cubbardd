@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Text,
   Alert,
+  Linking,
 } from "react-native";
 import {
   Menu,
@@ -23,6 +24,7 @@ import { signout } from "../../services";
 import { heightToDp, widthToDp } from "../../utils";
 import { Constants } from "react-native-unimodules";
 import SimpleToast from "react-native-simple-toast";
+import { WebView } from "react-native-webview";
 
 const { fontScale } = Dimensions.get("window");
 
@@ -88,7 +90,9 @@ const Appbar = ({
           )}
           <MenuOption
             onSelect={() => {
-              Alert.alert("Updating....");
+              Linking.openURL(
+                "https://www.iubenda.com/privacy-policy/48350961"
+              ).catch((e) => console.log(e));
             }}
           >
             <MyText

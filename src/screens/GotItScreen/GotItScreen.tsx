@@ -1026,6 +1026,8 @@ const GotItScreen = ({ navigation }: Props) => {
         <BannerAddWrapper
           style={{
             paddingTop: Platform.OS === "android" ? heightToDp("4%") : 0,
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
           <GoogleAdds />

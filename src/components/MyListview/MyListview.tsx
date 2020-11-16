@@ -297,67 +297,23 @@ export default function MyListView({
     const swipedItem = listData.filter((el) => el._id === id);
     if (Swipedata.translateX >= width * 0.2) {
       if (screenName === "NeedIt") {
-        Alert.alert("Would you like to move the item to the Got it list?", "", [
-          { text: "Cancel", style: "cancel" },
-          {
-            text: "Move",
-            onPress: async () => {
-              await moveToGotItList([id], swipedItem[0].low, false);
-              clearPrevDataOnSwipe(id);
-              getAllNotes();
-            },
-          },
-        ]);
+        await moveToGotItList([id], swipedItem[0].low, false);
+        clearPrevDataOnSwipe(id);
+        getAllNotes();
       } else if (screenName === "GotIt") {
-        Alert.alert(
-          "Would you like to move the item to the Need it list?",
-          "",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Move",
-              onPress: async () => {
-                await moveToNeedItList([id], swipedItem[0].low, false);
-                clearPrevDataOnSwipe(id);
-                getAllNotes();
-              },
-            },
-          ]
-        );
+        await moveToNeedItList([id], swipedItem[0].low, false);
+        clearPrevDataOnSwipe(id);
+        getAllNotes();
       }
     } else if (Swipedata.translateX <= -width * 0.2) {
       if (screenName === "NeedIt") {
-        Alert.alert("Would you like to move the item to the Got it list?", "", [
-          {
-            text: "Cancel",
-            style: "cancel",
-            onPress: () => {},
-          },
-          {
-            text: "Move",
-            onPress: async () => {
-              await moveToGotItList([id], swipedItem[0].low, false);
-              clearPrevDataOnSwipe(id);
-              getAllNotes();
-            },
-          },
-        ]);
+        await moveToGotItList([id], swipedItem[0].low, false);
+        clearPrevDataOnSwipe(id);
+        getAllNotes();
       } else if (screenName === "GotIt") {
-        Alert.alert(
-          "Would you like to move the item to the Need it list?",
-          "",
-          [
-            { text: "Cancel", style: "cancel" },
-            {
-              text: "Move",
-              onPress: async () => {
-                await moveToNeedItList([id], swipedItem[0].low, false);
-                clearPrevDataOnSwipe(id);
-                getAllNotes();
-              },
-            },
-          ]
-        );
+        await moveToNeedItList([id], swipedItem[0].low, false);
+        clearPrevDataOnSwipe(id);
+        getAllNotes();
       }
     }
   };

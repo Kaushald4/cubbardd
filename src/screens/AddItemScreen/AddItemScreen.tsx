@@ -265,7 +265,7 @@ const AddItemScreen = ({ navigation, route }: Props) => {
                               paddingBottom: heightToDp("2%"),
                             }}
                           >
-                            {items.length < 20 && (
+                            {items.length < 20 && !isTextFieldShown && (
                               <Pressable
                                 android_ripple={{
                                   color: theme.colors.background,

@@ -13,6 +13,7 @@ import {
 import { useTheme, Text, Button, TextInput } from "react-native-paper";
 import Svg, { G, Path, SvgXml } from "react-native-svg";
 import { Constants } from "react-native-unimodules";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 import Toast from "react-native-simple-toast";
 
@@ -56,6 +57,17 @@ const ForgotPassword = ({ navigation }: Props) => {
         barStyle="dark-content"
       />
       <LoadingIndicator isVisible={isLoading} title={""} />
+      <Pressable
+        style={{
+          paddingLeft: 20,
+          position: "absolute",
+          top: Platform.OS === "android" ? Constants.statusBarHeight + 20 : 10,
+          zIndex: 9999999,
+        }}
+        onPress={() => navigation.goBack()}
+      >
+        <MaterialIcons name="arrow-back" size={28} />
+      </Pressable>
       <SvgXml xml={bglayer} width={width} style={styles.bgLayer} />
 
       <View

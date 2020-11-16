@@ -45,6 +45,7 @@ const SignupScreen = ({ navigation }: Props) => {
   const theme = useTheme();
   const [isPasswordVisible, setPasswordVisible] = useState(true);
   const [passwordFeedbackVisible, setPasswordFeedbackVisible] = useState(false);
+  const [emailFeedbackVisible, setEmailFeedbackVisible] = useState(false);
   const [isFromSubmitting, setFormSubmitting] = useState(false);
   const [isFbLoading, setFbLoading] = useState(false);
 
@@ -196,6 +197,67 @@ const SignupScreen = ({ navigation }: Props) => {
                         validate={validateEmail}
                         keyboardType="email-address"
                       />
+                      <Pressable
+                        style={{
+                          position: "absolute",
+                          right: 12,
+                          top: 14,
+                        }}
+                        onPress={() => {
+                          setEmailFeedbackVisible(!emailFeedbackVisible);
+                          setPasswordFeedbackVisible(false);
+                        }}
+                      >
+                        <AntDesign
+                          name="questioncircle"
+                          size={24}
+                          color={theme.colors.disabled}
+                        />
+                      </Pressable>
+                      {/* email feedback section */}
+                      {emailFeedbackVisible && (
+                        <View
+                          style={{
+                            position: "absolute",
+                            width: 250,
+                            maxWidth: 250,
+                            right: 0,
+                            padding: 10,
+                            zIndex: 4,
+                            top: 60,
+                            borderRadius: 8,
+                            elevation: 20,
+                            backgroundColor: "#FFFFFF",
+                          }}
+                        >
+                          <View
+                            style={{
+                              position: "absolute",
+                              zIndex: 4,
+                              right: 5,
+                              top: -20,
+                            }}
+                          >
+                            <Svg width={40} height={20} viewBox="0 0 306 460">
+                              <G data-name="Polygon 1" fill="#FFFFFF">
+                                <Path d="M305.307 459.5H.693L153 1.584 305.307 459.5z" />
+                              </G>
+                            </Svg>
+                          </View>
+                          <Text
+                            style={{
+                              color: theme.colors.placeholder,
+                              lineHeight: 21,
+                            }}
+                          >
+                            Cubbard requires your email address to verify your
+                            account and to allow you to change your password
+                            should you need to in the future. Your email will be
+                            kept in a secure database and shall not be shared
+                            with any third parties
+                          </Text>
+                        </View>
+                      )}
                       {errors.email && (
                         <Text
                           style={[
