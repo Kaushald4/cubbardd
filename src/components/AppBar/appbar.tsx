@@ -24,7 +24,6 @@ import { signout } from "../../services";
 import { heightToDp, widthToDp } from "../../utils";
 import { Constants } from "react-native-unimodules";
 import SimpleToast from "react-native-simple-toast";
-import { WebView } from "react-native-webview";
 
 const { fontScale } = Dimensions.get("window");
 

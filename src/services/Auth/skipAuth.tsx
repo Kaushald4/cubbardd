@@ -34,7 +34,7 @@ export const addItemToAsyncStorage = async ({
       if (userNotesData && JSON.parse(userNotesData)) {
         const userNotes = JSON.parse(userNotesData);
         if (action === "needIt") {
-          if (userNotes.needIt.length >= 2) {
+          if (userNotes.needIt.length >= 20) {
             return Alert.alert(
               "Please Sign up to continue saving.....",
               "",
@@ -63,7 +63,7 @@ export const addItemToAsyncStorage = async ({
             await AsyncStorage.setItem("userNotes", JSON.stringify(newData));
             return needItData;
           }
-        } else if (userNotes.gotIt.length >= 2) {
+        } else if (userNotes.gotIt.length >= 20) {
           return Alert.alert(
             "Please Sign up to continue saving.....",
             "",

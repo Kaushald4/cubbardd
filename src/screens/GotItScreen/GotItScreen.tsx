@@ -58,6 +58,7 @@ const GotItScreen = ({ navigation }: Props) => {
   const [isMenuItemShown, setIsMenuItemShown] = useState(false);
   const [showBtn, seBtnShow] = useState(false);
   const [AllselectedItemLow, setSelectedItemLow] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   //TODO: remove navigation lisetner when component will unmount
   useEffect(() => {
@@ -88,6 +89,15 @@ const GotItScreen = ({ navigation }: Props) => {
       seBtnShow(false);
     }
   }, [selectedItems]);
+
+  useEffect(() => {
+    (async () => {
+      const authData = await AsyncStorage.getItem("token");
+      if (authData) {
+        setIsAuthenticated(true);
+      }
+    })();
+  }, []);
 
   const getAllNotes = async () => {
     try {
@@ -334,7 +344,7 @@ const GotItScreen = ({ navigation }: Props) => {
                 needIt: [...userNotes.needIt, ...filteredList],
                 gotIt: filteredGotItList,
               };
-              if (userNotes.needIt.length > 1) {
+              if (userNotes.needIt.length > 20) {
                 Alert.alert(
                   "Sign up to continue....",
                   "",
@@ -366,6 +376,10 @@ const GotItScreen = ({ navigation }: Props) => {
                 setIsLoading(false);
                 setSelectedItems([]);
                 await getAllNotes();
+                SimpleToast.show(
+                  "Moved to the Need it  list",
+                  SimpleToast.SHORT
+                );
               }
             } else {
               setIsLoading(true);
@@ -374,7 +388,7 @@ const GotItScreen = ({ navigation }: Props) => {
                 needIt: [...filteredNeedIttList, ...filteredList],
                 gotIt: [...filteredGotItList],
               };
-              if (userNotes.needIt.length > 1) {
+              if (userNotes.needIt.length > 20) {
                 Alert.alert(
                   "Sign up to continue....",
                   "",
@@ -416,7 +430,7 @@ const GotItScreen = ({ navigation }: Props) => {
             }
           } else {
             //when more than one item selected
-            if (userNotes.needIt.length > 1) {
+            if (userNotes.needIt.length > 20) {
               return Alert.alert(
                 "Sign up to continue....",
                 "",
@@ -756,7 +770,7 @@ const GotItScreen = ({ navigation }: Props) => {
                         paddingTop: (height / fontScale) * 0.1,
                       }}
                     >
-                      {showBtn ? (
+                      {showBtn && isAuthenticated ? (
                         // <Pressable
                         //   onPress={() => moveToNeedItList([], true)}
                         //   android_ripple={{ color: "#FFFFFF" }}
@@ -811,9 +825,11 @@ const GotItScreen = ({ navigation }: Props) => {
                           )}
                         </>
                       )}
-                      <Pressable onPress={deleteItem}>
-                        <MaterailIcons name="delete" size={20} />
-                      </Pressable>
+                      {isAuthenticated && (
+                        <Pressable onPress={deleteItem}>
+                          <MaterailIcons name="delete" size={20} />
+                        </Pressable>
+                      )}
                     </View>
                   )}
                   <TouchableOpacity
